@@ -31,7 +31,11 @@ public class RedisUtils {
      */
     public boolean setData(String key, String value, Long day){
         try {
-            template.opsForValue().set(URL_PREFIX + key, value, Duration.ofDays(day));
+            if(day == null) {
+                template.opsForValue().set(URL_PREFIX + key, value);
+            } else{
+                template.opsForValue().set(URL_PREFIX + key, value, Duration.ofDays(day));
+            }
             return true;
         } catch (Exception e){
             return false;
