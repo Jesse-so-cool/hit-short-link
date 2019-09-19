@@ -18,11 +18,12 @@ public class PfShortUrlEntity {
     private long id;
     private String longUrl;
     private Byte isValid;
-    private Timestamp validDate;
+    private long validDate;
     private Timestamp createDate;
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public long getId() {
         return id;
     }
@@ -53,11 +54,11 @@ public class PfShortUrlEntity {
 
     @Basic
     @Column(name = "valid_date", nullable = true)
-    public Timestamp getValidDate() {
+    public long getValidDate() {
         return validDate;
     }
 
-    public void setValidDate(Timestamp validDate) {
+    public void setValidDate(long validDate) {
         this.validDate = validDate;
     }
 
