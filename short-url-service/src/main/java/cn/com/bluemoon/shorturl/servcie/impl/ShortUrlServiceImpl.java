@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author XuZhuohao
  * @date 2019/9/18
  */
-@Service(version = "2.0.0")
-@org.springframework.stereotype.Service
+@Service(version = "${version.short-url.service}")
 public class ShortUrlServiceImpl implements ShortUrlService {
 
     @Autowired
