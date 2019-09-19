@@ -1,5 +1,8 @@
 package cn.com.bluemoon.shorturl.dto;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -10,6 +13,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "pf_short_url", schema = "moonmiddle", catalog = "")
+@EntityListeners(AuditingEntityListener.class)
 public class PfShortUrlEntity {
     private long id;
     private String longUrl;
@@ -59,6 +63,7 @@ public class PfShortUrlEntity {
 
     @Basic
     @Column(name = "create_date", nullable = true)
+    @CreatedDate
     public Timestamp getCreateDate() {
         return createDate;
     }
