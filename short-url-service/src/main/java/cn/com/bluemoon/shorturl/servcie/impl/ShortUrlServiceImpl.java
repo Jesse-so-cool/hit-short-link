@@ -21,7 +21,6 @@ import java.sql.Timestamp;
 import java.util.Optional;
 
 /**
- * @author XuZhuohao
  * @date 2019/9/18
  */
 @Service(version = "${version.short-url.service}")

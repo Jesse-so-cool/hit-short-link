@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author XuZhuohao
  * @date 2019/9/18
  */
 @Controller

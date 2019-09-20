@@ -4,7 +4,6 @@ import cn.com.bluemoon.shorturl.dto.ShortUrlEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * @author XuZhuohao
  * @date 2019/9/18
  */
 public interface ShortUrlRepository extends JpaRepository<ShortUrlEntity, Long> {

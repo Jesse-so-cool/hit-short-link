@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 /**
  * application
  *
- * @author XuZhuohao
  * @date 2019/9/18
  */
 @SpringBootApplication
