@@ -6,7 +6,7 @@ PIDFILE=service.pid
 ROOT_DIR="$(cd $(dirname $0) && pwd)"
 CLASSPATH=./*:$ROOT_DIR/lib/*:$ROOT_DIR/conf/
 JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseParallelGC"
-MAIN_CLASS=com.bluemoon.payment.wxpay.SdkWxpayApplication
+MAIN_CLASS=cn.com.bluemoon.shorturl.ShortUrlServiceApplication
 if [ ! -d "logs" ]; then
    mkdir logs
 fi
