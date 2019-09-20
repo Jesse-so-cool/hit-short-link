@@ -59,6 +59,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             redisUtils.setData(base62,shortUrlDto.getLongUrl(),shortUrlDto.getValidDate());
 
             shortUrlResult.setShortUrl(shortUrlConfig.getDomain()+base62);
+            shortUrlResult.setLongUrl(shortUrlDto.getLongUrl());
             shortUrlResult.setSuccess(true);
             shortUrlResult.setResponseMsg("请求成功");
         }catch (Exception e) {
@@ -98,6 +99,9 @@ public class ShortUrlServiceImpl implements ShortUrlService {
                     shortUrlResult.setResponseMsg("请求成功");
                     shortUrlResult.setSuccess(true);
                 }else {
+                    shortUrlEntity.setIsValid((byte) 0);
+                    repository.save(shortUrlEntity);
+
                     shortUrlResult.setLongUrl("expired.html");
                     shortUrlResult.setSuccess(true);
                 }
