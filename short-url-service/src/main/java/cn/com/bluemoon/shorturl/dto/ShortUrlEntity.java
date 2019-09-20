@@ -14,7 +14,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "pf_short_url", schema = "moonmiddle", catalog = "")
 @EntityListeners(AuditingEntityListener.class)
-public class PfShortUrlEntity {
+public class ShortUrlEntity {
     private long id;
     private String longUrl;
     private Byte isValid;
@@ -77,7 +77,7 @@ public class PfShortUrlEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PfShortUrlEntity that = (PfShortUrlEntity) o;
+        ShortUrlEntity that = (ShortUrlEntity) o;
         return id == that.id &&
                 Objects.equals(longUrl, that.longUrl) &&
                 Objects.equals(isValid, that.isValid) &&

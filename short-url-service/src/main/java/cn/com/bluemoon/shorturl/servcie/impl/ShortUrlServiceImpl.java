@@ -1,13 +1,21 @@
 package cn.com.bluemoon.shorturl.servcie.impl;
 
-import cn.com.bluemoon.shorturl.dto.PfShortUrlEntity;
+import cn.com.bluemoon.shorturl.config.ShortUrlConfig;
+import cn.com.bluemoon.shorturl.dto.ShortUrlDto;
+import cn.com.bluemoon.shorturl.dto.ShortUrlEntity;
 import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
-import cn.com.bluemoon.shorturl.repository.PfShortUrlRepository;
+import cn.com.bluemoon.shorturl.repository.ShortUrlRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
-import cn.com.bluemoon.shorturl.util.DateUtils;
+import cn.com.bluemoon.shorturl.util.ConvertUtil;
 import cn.com.bluemoon.shorturl.util.RedisUtils;
 import com.alibaba.dubbo.config.annotation.Service;
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.util.StringUtils;
+
+import java.sql.Timestamp;
+import java.util.Optional;
 
 /**
  * @author XuZhuohao
@@ -20,27 +28,85 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     private RedisUtils redisUtils;
 
     @Autowired
-    private PfShortUrlRepository repository;
+    private ShortUrlRepository repository;
 
+    @Autowired
+    private ShortUrlConfig shortUrlConfig;
     @Override
-    public ShortUrlResult longToShort(String longUrl, Long validTimeDay) {
+    public ShortUrlResult longToShort(ShortUrlDto shortUrlDto) {
 
+        ShortUrlResult shortUrlResult = new ShortUrlResult(null,null,"请求失败",false);
+        if (!checkParam(shortUrlDto,shortUrlResult)) {
+            return shortUrlResult;
+        }
+        try {
+            //TODO 需要一个定时器去跑刷valid的值
+            ShortUrlEntity urlEntity = repository.findByLongUrlAndAndIsValid(shortUrlDto.getLongUrl(), (byte) 1);
+            if (urlEntity!=null) {
+                urlEntity.setCreateDate(new Timestamp(System.currentTimeMillis()));
+                urlEntity.setValidDate(shortUrlDto.getValidDate()==null ? 100*365:shortUrlDto.getValidDate());
+                repository.save(urlEntity);
+            }else {
+                urlEntity = new ShortUrlEntity();
+                urlEntity.setIsValid((byte)1);
+                urlEntity.setLongUrl(shortUrlDto.getLongUrl());
+                urlEntity.setValidDate(shortUrlDto.getValidDate()==null ? 100*365:shortUrlDto.getValidDate());
+                repository.save(urlEntity);
+            }
+            // 生成短链接
+            String base62 = ConvertUtil.toBase62(urlEntity.getId());
+            // 保存到 redis
+            redisUtils.setData(base62,shortUrlDto.getLongUrl(),shortUrlDto.getValidDate());
 
-        PfShortUrlEntity entity = new PfShortUrlEntity();
-        entity.setIsValid((byte)1);
-        entity.setLongUrl(longUrl);
-        entity.setValidDate(DateUtils.newAddDay(validTimeDay));
-        //TODO: 检查 create by 是否自动生成
-        repository.save(entity);
-        // 生成短链接
+            shortUrlResult.setShortUrl(shortUrlConfig.getDomain()+base62);
+            shortUrlResult.setSuccess(true);
+            shortUrlResult.setResponseMsg("请求成功");
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return shortUrlResult;
+    }
 
-        // 保存到 redis
+    private boolean checkParam(ShortUrlDto shortUrlDto, ShortUrlResult shortUrlResult) {
+        if (shortUrlDto==null || shortUrlDto.getLongUrl()==null ) {
+            shortUrlResult.setResponseMsg("参数不规范");
+            return false;
+        }
+        if (shortUrlDto.getLongUrl().indexOf("http://")<0 && shortUrlDto.getLongUrl().indexOf("https://")<0) {
+            shortUrlDto.setLongUrl("http://"+shortUrlDto.getLongUrl());
+        }
 
-        return null;
+        return true;
     }
 
     @Override
     public ShortUrlResult shortToLong(String shortUrl) {
-        return null;
+        ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl,null,"请求失败",false);
+
+        String longUrl = redisUtils.getData(shortUrl);
+        if (StringUtil.isNullOrEmpty(longUrl)) {
+            final long id = ConvertUtil.toBase10(shortUrl);
+            final Optional<ShortUrlEntity> op = repository.findById(id);
+            if (op.isPresent()) {
+                final long now = System.currentTimeMillis();
+                final ShortUrlEntity shortUrlEntity = op.get();
+                if ((now-shortUrlEntity.getCreateDate().getTime()) < shortUrlEntity.getValidDate()*3600*1000*24) {
+                    //Duration.between();
+                    redisUtils.setData(ConvertUtil.toBase62(shortUrlEntity.getId()),shortUrlEntity.getLongUrl(),shortUrlEntity.getValidDate());
+
+                    shortUrlResult.setLongUrl(shortUrlEntity.getLongUrl());
+                    shortUrlResult.setResponseMsg("请求成功");
+                    shortUrlResult.setSuccess(true);
+                }else {
+                    shortUrlResult.setLongUrl("expired.html");
+                    shortUrlResult.setSuccess(true);
+                }
+            }
+        }else {
+            shortUrlResult.setLongUrl(longUrl);
+            shortUrlResult.setResponseMsg("请求成功");
+            shortUrlResult.setSuccess(true);
+        }
+        return shortUrlResult;
     }
 }

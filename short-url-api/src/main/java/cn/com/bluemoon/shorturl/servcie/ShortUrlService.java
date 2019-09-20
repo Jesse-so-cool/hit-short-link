@@ -1,5 +1,6 @@
 package cn.com.bluemoon.shorturl.servcie;
 
+import cn.com.bluemoon.shorturl.dto.ShortUrlDto;
 import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
 
 /**
@@ -11,11 +12,9 @@ import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
 public interface ShortUrlService {
     /**
      * 长链接转短链接
-     * @param longUrl 长链接
-     * @param validTimeDay 有效期限（单位：天)
      * @return 短链接
      */
-    ShortUrlResult longToShort(String longUrl, Long validTimeDay);
+    ShortUrlResult longToShort(ShortUrlDto shortUrlDto);
 
     ShortUrlResult shortToLong(String shortUrl);
 

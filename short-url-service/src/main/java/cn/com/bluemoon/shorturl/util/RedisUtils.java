@@ -46,4 +46,8 @@ public class RedisUtils {
         return template.opsForValue().get(URL_PREFIX + key);
     }
 
+    public void delete(String key){
+        template.delete(URL_PREFIX + key);
+    }
+
 }
