@@ -8,6 +8,7 @@ import cn.com.bluemoon.shorturl.util.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -26,7 +27,7 @@ public class ShortUrlController {
     private ShortUrlService shortUrlService;
 
     @ResponseBody
-    @RequestMapping("/longToShort")
+    @PostMapping("/longToShort")
     public ShortUrlResult longToShort(ShortUrlDto shortUrlDto) {
         return shortUrlService.longToShort(shortUrlDto);
     }
@@ -43,10 +44,6 @@ public class ShortUrlController {
     @Autowired
     private RedisUtils redisUtils;
 
-    @RequestMapping("/deleteRedis")
-    public void deleteRedis(String uri, HttpServletResponse response) throws Exception {
-        redisUtils.delete(uri);
-    }
 
     @ResponseBody
     @RequestMapping("/expired.html")

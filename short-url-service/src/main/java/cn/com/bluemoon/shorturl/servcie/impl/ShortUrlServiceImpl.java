@@ -40,7 +40,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             return shortUrlResult;
         }
         try {
-            //TODO 需要一个定时器去跑刷valid的值
             ShortUrlEntity urlEntity = repository.findByLongUrlAndAndIsValid(shortUrlDto.getLongUrl(), (byte) 1);
             if (urlEntity!=null) {
                 urlEntity.setCreateDate(new Timestamp(System.currentTimeMillis()));
@@ -69,7 +68,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     }
 
     private boolean checkParam(ShortUrlDto shortUrlDto, ShortUrlResult shortUrlResult) {
-        if (shortUrlDto==null || shortUrlDto.getLongUrl()==null ) {
+        if (shortUrlDto==null || shortUrlDto.getLongUrl()==null || shortUrlDto.getLongUrl().length()>255) {
             shortUrlResult.setResponseMsg("参数不规范");
             return false;
         }
