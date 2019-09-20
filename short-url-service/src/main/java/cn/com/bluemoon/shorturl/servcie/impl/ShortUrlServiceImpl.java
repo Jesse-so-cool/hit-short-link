@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.util.StringUtils;
 
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.Optional;
 
@@ -72,6 +75,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             shortUrlResult.setResponseMsg("参数不规范");
             return false;
         }
+        final String decode = URLDecoder.decode(shortUrlDto.getLongUrl());
+        shortUrlDto.setLongUrl(decode);
         if (shortUrlDto.getLongUrl().indexOf("http://")<0 && shortUrlDto.getLongUrl().indexOf("https://")<0) {
             shortUrlDto.setLongUrl("http://"+shortUrlDto.getLongUrl());
         }
