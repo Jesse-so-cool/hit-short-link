@@ -14,7 +14,7 @@ if [ -f "$PIDFILE" ]; then
     echo "Service is already start ..."
 else
     echo "Service  start ..."
-    nohup java $JAVA_OPTS -cp $CLASSPATH $MAIN_CLASS 1> logs/SdkWxpayApplication.out 2>&1  &
+    nohup java $JAVA_OPTS -cp $CLASSPATH $MAIN_CLASS 1> logs/log.out 2>&1  &
     printf '%d' $! > $PIDFILE
     echo "Service  start SUCCESS "
 fi
