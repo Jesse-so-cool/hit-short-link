@@ -111,10 +111,10 @@ public class ShortUrlServiceImpl implements ShortUrlService {
                     shortUrlEntity.setIsValid((byte) 0);
                     repository.save(shortUrlEntity);
 
-                    shortUrlResult.setLongUrl("expired.html");
+                    shortUrlResult.setLongUrl(shortUrlConfig.getDomain()+"expired.html");
                 }
             }else {
-                shortUrlResult.setLongUrl("notExist.html");
+                shortUrlResult.setLongUrl(shortUrlConfig.getDomain()+"notExist.html");
             }
             //shortUrlResult.setLongUrl(longUrl);
         }else {
