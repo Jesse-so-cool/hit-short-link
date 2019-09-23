@@ -117,9 +117,11 @@ public class ShortUrlServiceImpl implements ShortUrlService {
                 shortUrlResult.setLongUrl("notExist.html");
             }
             //shortUrlResult.setLongUrl(longUrl);
-            shortUrlResult.setResponseMsg("请求成功");
-            shortUrlResult.setSuccess(true);
+        }else {
+            shortUrlResult.setLongUrl(longUrl);
         }
+        shortUrlResult.setResponseMsg("请求成功");
+        shortUrlResult.setSuccess(true);
         return shortUrlResult;
     }
 }
