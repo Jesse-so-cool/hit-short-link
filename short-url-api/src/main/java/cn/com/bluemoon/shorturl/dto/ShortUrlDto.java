@@ -1,7 +1,9 @@
 package cn.com.bluemoon.shorturl.dto;
 
 
-public class ShortUrlDto {
+import java.io.Serializable;
+
+public class ShortUrlDto implements Serializable {
     /**
      * 长链接
      */

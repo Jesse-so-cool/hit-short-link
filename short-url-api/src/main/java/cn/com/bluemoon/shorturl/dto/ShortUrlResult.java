@@ -1,11 +1,13 @@
 package cn.com.bluemoon.shorturl.dto;
 
 
+import java.io.Serializable;
+
 /**
  * 短链接返回结果
  *
  */
-public class ShortUrlResult {
+public class ShortUrlResult implements Serializable {
     /**
      * 短链接
      */
