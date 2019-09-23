@@ -2,7 +2,6 @@ package cn.com.bluemoon.shorturl.dto;
 
 
 public class ShortUrlDto {
-
     /**
      * 长链接
      */

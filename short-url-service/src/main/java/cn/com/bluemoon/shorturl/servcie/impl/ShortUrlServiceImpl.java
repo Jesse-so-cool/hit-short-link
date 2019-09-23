@@ -19,6 +19,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * @date 2019/9/18
@@ -58,8 +59,11 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             String base62 = ConvertUtil.toBase62(urlEntity.getId());
             // 保存到 redis
             redisUtils.setData(base62,shortUrlDto.getLongUrl(),shortUrlDto.getValidDate());
+            //最后以为加入随机数
+            Random random = new Random();
+            final int i = random.nextInt(61);
+            shortUrlResult.setShortUrl(shortUrlConfig.getDomain()+base62+ConvertUtil.BASE.charAt(i));
 
-            shortUrlResult.setShortUrl(shortUrlConfig.getDomain()+base62);
             shortUrlResult.setLongUrl(shortUrlDto.getLongUrl());
             shortUrlResult.setSuccess(true);
             shortUrlResult.setResponseMsg("请求成功");
@@ -74,8 +78,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             shortUrlResult.setResponseMsg("参数不规范");
             return false;
         }
-        final String decode = URLDecoder.decode(shortUrlDto.getLongUrl());
-        shortUrlDto.setLongUrl(decode);
+        //final String decode = URLDecoder.decode(shortUrlDto.getLongUrl());
+        //shortUrlDto.setLongUrl(decode);
         if (shortUrlDto.getLongUrl().indexOf("http://")<0 && shortUrlDto.getLongUrl().indexOf("https://")<0) {
             shortUrlDto.setLongUrl("http://"+shortUrlDto.getLongUrl());
         }
@@ -86,6 +90,9 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     @Override
     public ShortUrlResult shortToLong(String shortUrl) {
         ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl,null,"请求失败",false);
+
+        //切到最后以为 随机数
+        shortUrl = shortUrl.substring(0,shortUrl.length()-1);
 
         String longUrl = redisUtils.getData(shortUrl);
         if (StringUtil.isNullOrEmpty(longUrl)) {
@@ -100,17 +107,16 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
                     shortUrlResult.setLongUrl(shortUrlEntity.getLongUrl());
                     shortUrlResult.setResponseMsg("请求成功");
-                    shortUrlResult.setSuccess(true);
                 }else {
                     shortUrlEntity.setIsValid((byte) 0);
                     repository.save(shortUrlEntity);
 
                     shortUrlResult.setLongUrl("expired.html");
-                    shortUrlResult.setSuccess(true);
                 }
+            }else {
+                shortUrlResult.setLongUrl("notExist.html");
             }
-        }else {
-            shortUrlResult.setLongUrl(longUrl);
+            //shortUrlResult.setLongUrl(longUrl);
             shortUrlResult.setResponseMsg("请求成功");
             shortUrlResult.setSuccess(true);
         }

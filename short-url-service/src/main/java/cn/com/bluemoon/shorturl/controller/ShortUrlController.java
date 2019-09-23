@@ -48,8 +48,11 @@ public class ShortUrlController {
     @RequestMapping("/expired.html")
     public String expired() throws Exception {
         return "链接已过期";
-
     }
-
+    @ResponseBody
+    @RequestMapping("/notExist.html")
+    public String notExist() throws Exception {
+        return "链接不存在";
+    }
 
 }

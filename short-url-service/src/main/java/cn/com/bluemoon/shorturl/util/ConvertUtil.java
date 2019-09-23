@@ -2,7 +2,7 @@ package cn.com.bluemoon.shorturl.util;
 
 public class ConvertUtil {
 
-    private static final String BASE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    public static final String BASE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     public static String toBase62(long num) {
         StringBuilder sb = new StringBuilder();
