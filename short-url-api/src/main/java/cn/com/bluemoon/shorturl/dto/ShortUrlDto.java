@@ -5,12 +5,12 @@ import java.io.Serializable;
 
 public class ShortUrlDto implements Serializable {
     /**
-     * 长链接
+     * 长链接 必填
      */
     private String longUrl;
 
     /**
-     * 有效期(单位: 天)
+     * 有效期(单位: 天)  非必填
      */
     private Long validDate;
 
