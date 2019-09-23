@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>short-url-api</artifactId>
+    <version>1.0.0</version>
     <repositories>
         <repository>
             <id>nexus</id>
@@ -18,9 +19,9 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <!--<snapshots>-->
+                <!--<enabled>true</enabled>-->
+            <!--</snapshots>-->
         </repository>
     </repositories>
     <pluginRepositories>
