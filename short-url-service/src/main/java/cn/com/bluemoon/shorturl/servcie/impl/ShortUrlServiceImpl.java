@@ -57,8 +57,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             }
             // 生成短链接
             String base62 = ConvertUtil.toBase62(urlEntity.getId());
-            // 保存到 redis
-            redisUtils.setData(base62,shortUrlDto.getLongUrl(),shortUrlDto.getValidDate());
+            // 保存到 redis  改成一个礼拜有效期
+            redisUtils.setData(base62,shortUrlDto.getLongUrl(), (long) 7);
             //最后以为加入随机数
             Random random = new Random();
             final int i = random.nextInt(61);
@@ -102,8 +102,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
                 final long now = System.currentTimeMillis();
                 final ShortUrlEntity shortUrlEntity = op.get();
                 if ((now-shortUrlEntity.getCreateDate().getTime()) < shortUrlEntity.getValidDate()*3600*1000*24) {
-                    //Duration.between();
-                    redisUtils.setData(ConvertUtil.toBase62(shortUrlEntity.getId()),shortUrlEntity.getLongUrl(),shortUrlEntity.getValidDate());
+                    //Duration.between(); 每一次都进来 都会再给7天的有效期
+                    redisUtils.setData(ConvertUtil.toBase62(shortUrlEntity.getId()),shortUrlEntity.getLongUrl(), (long) 7);
 
                     shortUrlResult.setLongUrl(shortUrlEntity.getLongUrl());
                     shortUrlResult.setResponseMsg("请求成功");

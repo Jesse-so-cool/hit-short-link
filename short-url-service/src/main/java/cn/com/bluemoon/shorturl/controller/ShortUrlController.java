@@ -25,8 +25,8 @@ public class ShortUrlController {
     @Autowired
     private ShortUrlService shortUrlService;
 
-    @ResponseBody
-    @PostMapping("/longToShort")
+    //@ResponseBody
+    //@PostMapping("/longToShort")
     public ShortUrlResult longToShort(ShortUrlDto shortUrlDto) {
         return shortUrlService.longToShort(shortUrlDto);
     }
