@@ -5,6 +5,9 @@ import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
 import cn.com.bluemoon.shorturl.repository.ShortUrlRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
 import cn.com.bluemoon.shorturl.util.RedisUtils;
+import com.bluemoon.pf.mgr.common.anno.BmAnno;
+import com.bluemoon.pf.mgr.common.anno.BmBizAction;
+import com.bluemoon.pf.mgr.common.anno.BmParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,8 +28,8 @@ public class ShortUrlController {
     @Autowired
     private ShortUrlService shortUrlService;
 
-    //@ResponseBody
-    //@PostMapping("/longToShort")
+    @ResponseBody
+    @PostMapping("/longToShort")
     public ShortUrlResult longToShort(ShortUrlDto shortUrlDto) {
         return shortUrlService.longToShort(shortUrlDto);
     }

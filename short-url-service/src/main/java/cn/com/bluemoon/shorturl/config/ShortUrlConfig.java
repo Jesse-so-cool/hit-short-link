@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 public class ShortUrlConfig {
+    //读取配置的属性信息@Value()
     @Value("${short.url.domain}")
     private String domain;
 }
