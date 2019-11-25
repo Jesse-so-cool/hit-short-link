@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.bluemoon.pf</groupId>
             <artifactId>tools-mgr-biz</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <!-- apollo -->
         <dependency>
