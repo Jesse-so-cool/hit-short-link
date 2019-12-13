@@ -48,7 +48,7 @@
     <dependencies>
         <dependency>
             <groupId>com.bluemoon.pf</groupId>
-            <artifactId>tools-mgr-biz</artifactId>
+            <artifactId>tools-mgr-anno</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>

@@ -12,6 +12,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.bluemoon.pf.mgr.common.anno.BmAnno;
 import com.bluemoon.pf.mgr.common.anno.BmBizAction;
 import com.bluemoon.pf.mgr.common.anno.BmParam;
+import com.bluemoon.pf.mgr.anno.*;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -29,7 +30,6 @@ import java.util.Random;
  * @date 2019/9/18
  */
 @Service(version = "${version.short-url.service}")
-@BmAnno()
 public class ShortUrlServiceImpl implements ShortUrlService {
 
     @Autowired
@@ -95,11 +95,10 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     }
 
     @Override
-    @BmBizAction("shortToLong")
-    public ShortUrlResult shortToLong(@BmParam(value = "短链接") String shortUrl) {
+    public ShortUrlResult shortToLong(String shortUrl) {
         ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl,null,"请求失败",false);
 
-        //切到最后一位 随机数
+        //切到最后以为 随机数
         shortUrl = shortUrl.substring(0,shortUrl.length()-1);
 
         String longUrl = redisUtils.getData(shortUrl);
