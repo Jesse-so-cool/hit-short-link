@@ -1,5 +1,8 @@
 package cn.com.bluemoon.shorturl.dto;
 
+
+
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -9,7 +12,6 @@ import java.util.Map;
 /**
  * 返回结果
  *
- * @author XuZhuohao
  * @date 2019/9/18
  */
 @Data

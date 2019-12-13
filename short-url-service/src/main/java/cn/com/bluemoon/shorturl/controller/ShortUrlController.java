@@ -5,9 +5,13 @@ import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
 import cn.com.bluemoon.shorturl.repository.ShortUrlRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
 import cn.com.bluemoon.shorturl.util.RedisUtils;
+import com.bluemoon.pf.mgr.common.anno.BmAnno;
+import com.bluemoon.pf.mgr.common.anno.BmBizAction;
+import com.bluemoon.pf.mgr.common.anno.BmParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -15,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author XuZhuohao
  * @date 2019/9/18
  */
 @Controller
@@ -26,7 +29,7 @@ public class ShortUrlController {
     private ShortUrlService shortUrlService;
 
     @ResponseBody
-    @RequestMapping("/longToShort")
+    @PostMapping("/longToShort")
     public ShortUrlResult longToShort(ShortUrlDto shortUrlDto) {
         return shortUrlService.longToShort(shortUrlDto);
     }
@@ -43,17 +46,16 @@ public class ShortUrlController {
     @Autowired
     private RedisUtils redisUtils;
 
-    @RequestMapping("/deleteRedis")
-    public void deleteRedis(String uri, HttpServletResponse response) throws Exception {
-        redisUtils.delete(uri);
-    }
 
     @ResponseBody
     @RequestMapping("/expired.html")
     public String expired() throws Exception {
         return "链接已过期";
-
     }
-
+    @ResponseBody
+    @RequestMapping("/notExist.html")
+    public String notExist() throws Exception {
+        return "链接不存在";
+    }
 
 }

@@ -1,15 +1,13 @@
 package cn.com.bluemoon.shorturl.dto;
 
-import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 短链接返回结果
  *
- * @author XuZhuohao
- * @date 2019/9/18
  */
-@Data
-public class ShortUrlResult {
+public class ShortUrlResult implements Serializable {
     /**
      * 短链接
      */
@@ -26,6 +24,38 @@ public class ShortUrlResult {
      * 是否成功
      */
     private boolean isSuccess;
+
+    public String getShortUrl() {
+        return shortUrl;
+    }
+
+    public void setShortUrl(String shortUrl) {
+        this.shortUrl = shortUrl;
+    }
+
+    public String getLongUrl() {
+        return longUrl;
+    }
+
+    public void setLongUrl(String longUrl) {
+        this.longUrl = longUrl;
+    }
+
+    public String getResponseMsg() {
+        return responseMsg;
+    }
+
+    public void setResponseMsg(String responseMsg) {
+        this.responseMsg = responseMsg;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
+    }
 
     public ShortUrlResult(String shortUrl, String longUrl, String responseMsg, boolean isSuccess) {
         this.shortUrl = shortUrl;

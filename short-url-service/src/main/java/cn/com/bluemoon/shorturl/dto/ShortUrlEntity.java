@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
- * @author XuZhuohao
  * @date 2019/9/18
  */
 @Entity

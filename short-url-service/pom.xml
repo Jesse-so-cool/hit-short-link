@@ -12,6 +12,12 @@
     <artifactId>short-url-service</artifactId>
 
     <dependencies>
+        <!--tools-->
+        <dependency>
+            <groupId>com.bluemoon.pf</groupId>
+            <artifactId>tools-mgr-biz</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <!-- apollo -->
         <dependency>
             <groupId>cn.com.bluemoon.apollo</groupId>
@@ -21,7 +27,7 @@
         <dependency>
             <groupId>cn.com.bluemoon</groupId>
             <artifactId>short-url-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
         <!--<dependency>
             <groupId>cn.com.bluemoon</groupId>
