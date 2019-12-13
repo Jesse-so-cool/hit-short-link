@@ -41,16 +41,14 @@ public class ControllerTestNg  extends AbstractApplicationTestNg {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(jsonObject.toString());
 
-        MvcResult mvcResult = mockMvc.perform(request).andReturn() ;
+        MvcResult mvcResult = mockMvc.perform(request).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString();
         System.out.println("返回结果："+status);
         System.out.println(content);
-        if(status != 200){
-            Assert.assertEquals("我就是do", content,"结果不对哦");
-        }
-
+        Assert.assertTrue(status==200,"请求失败");
     }
+
     @Test
     public void executeShortToLong() throws  Exception {
         RequestBuilder request = MockMvcRequestBuilders.get("/fxSUx");
@@ -60,10 +58,7 @@ public class ControllerTestNg  extends AbstractApplicationTestNg {
         String content = mvcResult.getResponse().getContentAsString();
         System.out.println("返回结果："+status);
         System.out.println(content);
-//        Assert.assertEquals("正确", content,"结果不对哦");
-        if(status != 200){
-            Assert.assertEquals("我就是do", content,"结果不对哦");
-        }
+        Assert.assertTrue(status==200,"请求失败");
     }
 
 }

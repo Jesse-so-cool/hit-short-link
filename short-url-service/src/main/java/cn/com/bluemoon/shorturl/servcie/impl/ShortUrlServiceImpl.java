@@ -14,13 +14,6 @@ import com.bluemoon.pf.mgr.anno.BmBizAction;
 import com.bluemoon.pf.mgr.anno.BmParam;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.Random;
@@ -40,8 +33,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
     @Autowired
     private ShortUrlConfig shortUrlConfig;
-    @Override
 
+    @Override
     @BmBizAction(value = "longToShort",comment = "longUrl:长链接;validDate:有效期")
     public ShortUrlResult longToShort(@BmParam ShortUrlDto shortUrlDto) {
 
