@@ -9,9 +9,9 @@ import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
 import cn.com.bluemoon.shorturl.util.ConvertUtil;
 import cn.com.bluemoon.shorturl.util.RedisUtils;
 import com.alibaba.dubbo.config.annotation.Service;
-import com.bluemoon.pf.mgr.common.anno.BmAnno;
-import com.bluemoon.pf.mgr.common.anno.BmBizAction;
-import com.bluemoon.pf.mgr.common.anno.BmParam;
+import com.bluemoon.pf.mgr.anno.BmAnno;
+import com.bluemoon.pf.mgr.anno.BmBizAction;
+import com.bluemoon.pf.mgr.anno.BmParam;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -42,7 +42,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     private ShortUrlConfig shortUrlConfig;
     @Override
 
-    @BmBizAction(value = "longToShort")
+    @BmBizAction(value = "longToShort",comment = "longUrl:长链接;validDate:有效期")
     public ShortUrlResult longToShort(@BmParam ShortUrlDto shortUrlDto) {
 
         ShortUrlResult shortUrlResult = new ShortUrlResult(null,null,"请求失败",false);
@@ -95,8 +95,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     }
 
     @Override
-    @BmBizAction("shortToLong")
-    public ShortUrlResult shortToLong(@BmParam(value = "短链接") String shortUrl) {
+    @BmBizAction(value = "shortToLong",comment = "短链接")
+    public ShortUrlResult shortToLong(@BmParam String shortUrl) {
         ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl,null,"请求失败",false);
 
         //切到最后一位 随机数
