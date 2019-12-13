@@ -28,7 +28,7 @@ public class DubboTestNg   extends AbstractApplicationTestNg {
         ShortUrlResult shortUrlResult = shortUrlService.longToShort(shortUrlDto);
         System.out.println(shortUrlResult.getShortUrl());
 
-        Assert.assertEquals(true,shortUrlResult.isSuccess(),"dubbo调用失败");
+        Assert.assertEquals(shortUrlResult.isSuccess(),true,"dubbo调用失败");
     }
 
     @Test
@@ -44,7 +44,7 @@ public class DubboTestNg   extends AbstractApplicationTestNg {
         expected.setShortUrl("fxSUH");
         expected.setResponseMsg("请求成功");
         expected.setSuccess(true);
-        Assert.assertEquals(JSONObject.toJSONString(expected),JSONObject.toJSONString(shortUrlResult),"与预期结果不符");
+        Assert.assertEquals(JSONObject.toJSONString(shortUrlResult),JSONObject.toJSONString(expected),"与预期结果不符");
     }
 
 }
