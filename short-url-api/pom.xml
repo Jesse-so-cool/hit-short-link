@@ -45,5 +45,12 @@
             <url>http://192.168.236.7:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.bluemoon.pf</groupId>
+            <artifactId>tools-mgr-anno</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
