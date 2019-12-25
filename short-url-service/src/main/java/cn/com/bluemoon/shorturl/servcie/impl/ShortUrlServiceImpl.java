@@ -88,7 +88,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     }
 
     @Override
-    @BmBizAction(value = "shortToLong",comment = "短链接")
+    @BmBizAction(value = "shortToLong",comment = "shortUrl:短链接")
     public ShortUrlResult shortToLong(@BmParam String shortUrl) {
         ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl,null,"请求失败",false);
 
