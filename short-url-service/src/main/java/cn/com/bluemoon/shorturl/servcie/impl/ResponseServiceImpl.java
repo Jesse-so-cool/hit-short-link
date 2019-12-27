@@ -17,13 +17,11 @@ import com.bluemoon.pf.standard.utils.ResponseBeanUtil;
 import javax.xml.ws.Response;
 
 @Service(version = "3.0.0")
-@BmAnno
 public class ResponseServiceImpl implements ResponseService{
-    @Reference(version = "9.9.9")
+    @Reference(version = "${version.short-url.service}")
     private ShortUrlService shortUrlService;
 
     @Override
-    @BmBizAction(value = "longToShort",comment = "longUrl:长链接;validDate:有效期")
     public ResponseBean longToShort(@BmParam ShortUrlDto shortUrlDto) {
         try{
             ShortUrlResult shortUrlResult = shortUrlService.longToShort(shortUrlDto);
@@ -37,7 +35,6 @@ public class ResponseServiceImpl implements ResponseService{
     }
 
     @Override
-    @BmBizAction(value = "shortToLong",comment = "shortUrl:短链接")
     public ResponseBean shortToLong(@BmParam String uri) {
         try{
             ShortUrlResult shortUrlResult = shortUrlService.shortToLong(uri);

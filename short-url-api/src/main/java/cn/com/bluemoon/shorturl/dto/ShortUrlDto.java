@@ -4,8 +4,6 @@ package cn.com.bluemoon.shorturl.dto;
 
 //import com.bluemoon.pf.mgr.anno.BmParam;
 
-import com.bluemoon.pf.mgr.anno.*;
-
 import java.io.Serializable;
 
 

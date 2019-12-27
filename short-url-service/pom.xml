@@ -12,6 +12,12 @@
     <artifactId>short-url-service</artifactId>
 
     <dependencies>
+        <!--log-->
+        <dependency>
+            <artifactId>tools-logback</artifactId>
+            <groupId>com.bluemoon.pf</groupId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--test-suite-->
         <dependency>
             <groupId>com.bluemoon.pf</groupId>
@@ -24,23 +30,6 @@
             <artifactId>tools-mgr-biz</artifactId>
             <version>2.0.0.RELEASE</version>
         </dependency>
-        <!--testng-->
-        <dependency>
-            <groupId>com.bluemoon.pf</groupId>
-            <artifactId>testng-suite</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <!--tools-->
-       <!-- <dependency>
-            <groupId>com.bluemoon.pf</groupId>
-            <artifactId>tools-mgr-biz</artifactId>
-            <version>1.0.0</version>
-        </dependency>-->
-        <dependency>
-            <groupId>com.bluemoon.pf</groupId>
-            <artifactId>tools-mgr-biz</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
         <!-- apollo -->
         <dependency>
             <groupId>cn.com.bluemoon.apollo</groupId>
@@ -50,7 +39,7 @@
         <dependency>
             <groupId>cn.com.bluemoon</groupId>
             <artifactId>short-url-api</artifactId>
-            <version>1.0.0</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.boot</groupId>
