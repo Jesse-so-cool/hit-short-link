@@ -43,7 +43,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             return shortUrlResult;
         }
         try {
-            //todo 加索引
+            //加索引
             ShortUrlEntity urlEntity = repository.findByLongUrlAndAndIsValid(shortUrlDto.getLongUrl(), (byte) 1);
             if (urlEntity!=null) {
                 urlEntity.setCreateDate(new Timestamp(System.currentTimeMillis()));
@@ -89,8 +89,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     @Override
     @BmBizAction(value = "shortToLong",comment = "shortUrl:短链接")
     public ShortUrlResult shortToLong(@BmParam String shortUrl) {
-        //TODO 关于点击率的需求
-        //扔redis list里 然后异步拿出来 扔数据库里
         //X-REAL-IP 根据这个nginx拿到真实ip地址
         ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl,null,"请求失败",false);
 
@@ -102,6 +100,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             final long id = ConvertUtil.toBase10(shortUrl);
             final Optional<ShortUrlEntity> op = repository.findById(id);
             if (op.isPresent()) {
+                //todo 这块直接放到RecordTask.handle()去处理
                 final long now = System.currentTimeMillis();
                 final ShortUrlEntity shortUrlEntity = op.get();
                 if ((now-shortUrlEntity.getCreateDate().getTime()) < shortUrlEntity.getValidDate()*3600*1000*24) {
@@ -123,7 +122,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         }else {
             shortUrlResult.setLongUrl(longUrl);
         }
-
         shortUrlResult.setResponseMsg("请求成功");
         shortUrlResult.setSuccess(true);
         return shortUrlResult;
