@@ -21,7 +21,7 @@ import java.util.Random;
 /**
  * @date 2019/9/18
  */
-@Service(version = "${version.short-url.service}")
+//@Service(version = "${version.short-url.service}")
 @BmAnno()
 public class ShortUrlServiceImpl implements ShortUrlService {
 
@@ -43,6 +43,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             return shortUrlResult;
         }
         try {
+            //todo 加索引
             ShortUrlEntity urlEntity = repository.findByLongUrlAndAndIsValid(shortUrlDto.getLongUrl(), (byte) 1);
             if (urlEntity!=null) {
                 urlEntity.setCreateDate(new Timestamp(System.currentTimeMillis()));
@@ -78,8 +79,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             shortUrlResult.setResponseMsg("参数不规范");
             return false;
         }
-        //final String decode = URLDecoder.decode(shortUrlDto.getLongUrl());
-        //shortUrlDto.setLongUrl(decode);
         if (shortUrlDto.getLongUrl().indexOf("http://")<0 && shortUrlDto.getLongUrl().indexOf("https://")<0) {
             shortUrlDto.setLongUrl("http://"+shortUrlDto.getLongUrl());
         }
@@ -90,6 +89,9 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     @Override
     @BmBizAction(value = "shortToLong",comment = "shortUrl:短链接")
     public ShortUrlResult shortToLong(@BmParam String shortUrl) {
+        //TODO 关于点击率的需求
+        //扔redis list里 然后异步拿出来 扔数据库里
+        //X-REAL-IP 根据这个nginx拿到真实ip地址
         ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl,null,"请求失败",false);
 
         //切到最后一位 随机数
@@ -121,6 +123,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         }else {
             shortUrlResult.setLongUrl(longUrl);
         }
+
         shortUrlResult.setResponseMsg("请求成功");
         shortUrlResult.setSuccess(true);
         return shortUrlResult;
