@@ -3,13 +3,12 @@ package cn.com.bluemoon.shorturl.controller;
 import cn.com.bluemoon.shorturl.dto.ShortUrlDto;
 import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
-import cn.com.bluemoon.shorturl.util.RedisUtils;
+import cn.com.bluemoon.shorturl.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * @date 2019/9/18
