@@ -1,8 +1,7 @@
 package cn.com.bluemoon.shorturl.init;
 
-import cn.com.bluemoon.shorturl.util.RedisUtils;
+import cn.com.bluemoon.shorturl.redis.RedisUtils;
 import com.ctrip.framework.apollo.Config;
-import com.ctrip.framework.apollo.ConfigService;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfig;
@@ -12,19 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -80,7 +69,7 @@ public class RecordTask {
         this.second = second;
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void init() {
         executor = Executors.newSingleThreadScheduledExecutor();
         Runnable command = () -> {
