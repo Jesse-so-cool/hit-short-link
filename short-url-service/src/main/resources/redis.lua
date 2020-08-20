@@ -1,5 +1,3 @@
-local low = tonumber(ARGV[1])
-local high = tonumber(ARGV[2])
 local data = redis.call('lrange', KEYS[1], ARGV[1],ARGV[2])
 local size = table.getn(data);
 if size == 0 then

@@ -53,7 +53,7 @@ public class RecordTask {
 
     ScheduledExecutorService executor ;
 
-    public final static String key = "short-url-record-list";
+    public final static String key = "record-list";
     private Integer amount;
     private Integer second;
 

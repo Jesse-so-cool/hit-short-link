@@ -4,7 +4,9 @@ import cn.com.bluemoon.shorturl.redis.RedisUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.bluemoon.pf.standard.bean.ResponseBean;
 import com.bluemoon.pf.standard.utils.ResponseBeanUtil;
+import com.bluemoon.pf.testng.AbstractApplicationTestNg;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -14,9 +16,8 @@ import java.util.List;
  * @author jesse hsj
  * @date 2020/8/18 16:44
  */
-public class RedisTest {
-
-
+@SpringBootTest(classes = ShortUrlServiceApplication.class)
+public class RedisTest extends AbstractApplicationTestNg {
     @Autowired
     private RedisUtils redisUtils;
 
@@ -30,7 +31,7 @@ public class RedisTest {
     }
     @Test
     public void luaTest(){
-        List<String> strings = redisUtils.batchPopList("jesse-demo", 1);
+        List<String> strings = redisUtils.batchPopList("jesse-demo", 100);
         for (String string : strings) {
             ResponseBean responseBean = JSONObject.parseObject(string, ResponseBean.class);
             System.out.println(responseBean.getData());
