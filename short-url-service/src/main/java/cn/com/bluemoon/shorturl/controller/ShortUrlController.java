@@ -22,7 +22,7 @@ public class ShortUrlController {
 
     @ResponseBody
     @PostMapping("/longToShort")
-    public ShortUrlResult longToShort(ShortUrlDto shortUrlDto) {
+    public ShortUrlResult longToShort(@RequestBody ShortUrlDto shortUrlDto) {
         return shortUrlService.longToShort(shortUrlDto);
     }
 

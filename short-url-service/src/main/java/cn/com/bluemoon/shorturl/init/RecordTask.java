@@ -1,11 +1,18 @@
 package cn.com.bluemoon.shorturl.init;
 
+import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordDto;
+import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordEntity;
 import cn.com.bluemoon.shorturl.redis.RedisUtils;
+import cn.com.bluemoon.shorturl.repository.ShortUrlQueryRecordRepository;
+import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
+import com.alibaba.fastjson.JSONObject;
+import com.bluemoon.pf.standard.bean.ResponseBean;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfig;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -13,6 +20,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -36,6 +45,11 @@ public class RecordTask {
 
     @Autowired
     private RedisUtils redisUtils;
+
+
+    @Autowired
+    ShortUrlQueryRecordService shortUrlQueryRecordService;
+
 
     ScheduledExecutorService executor ;
 
@@ -69,7 +83,7 @@ public class RecordTask {
         this.second = second;
     }
 
-    //@PostConstruct
+    @PostConstruct
     public void init() {
         executor = Executors.newSingleThreadScheduledExecutor();
         Runnable command = () -> {
@@ -90,7 +104,14 @@ public class RecordTask {
     }
 
     private void handler(List<String> list) {
-
+        if (list.size()>0){
+            List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = new ArrayList<>();
+            for (String data : list){
+                ShortUrlQueryRecordDto shortUrlQueryRecordDto= JSONObject.parseObject(data, ShortUrlQueryRecordDto.class);
+                shortUrlQueryRecordDtoList.add(shortUrlQueryRecordDto);
+            }
+            shortUrlQueryRecordService.save(shortUrlQueryRecordDtoList);
+        }
     }
 
     @ApolloConfigChangeListener(value = "application")
@@ -102,13 +123,13 @@ public class RecordTask {
                 break;
             }
         }
-        if (!isUpdated) return;
+        if (!isUpdated) {return;}
         ConfigChange amount = changeEvent.getChange("record-task.amount");
-        if (amount != null) this.setAmount(Integer.parseInt(amount.getNewValue()));
+        if (amount != null) {this.setAmount(Integer.parseInt(amount.getNewValue()));}
         ConfigChange second = changeEvent.getChange("record-task.second");
-        if (second != null) this.setSecond(Integer.parseInt(second.getNewValue()));
+        if (second != null) {this.setSecond(Integer.parseInt(second.getNewValue()));}
         ConfigChange enabled = changeEvent.getChange("record-task.enabled");
-        if (enabled != null) this.setEnabled(Boolean.valueOf(enabled.getNewValue()));
+        if (enabled != null){ this.setEnabled(Boolean.valueOf(enabled.getNewValue()));}
 
         try {
             if (this.enabled) {

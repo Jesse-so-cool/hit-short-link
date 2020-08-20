@@ -74,15 +74,8 @@ public class RedisUtils {
         return template.opsForValue().get(key);
     }
 
-    public void delete(String key){
-        template.delete(key);
-    }
-
-    public void push(String key, String value){
-        template.opsForList().rightPush(key, value);
-    }
-
     public List<String> batchPopList(String key, int amount){
+
         DefaultRedisScript<String> script = new DefaultRedisScript<>();
         script.setResultType(String.class);
         script.setScriptSource(new ResourceScriptSource(new
@@ -95,5 +88,13 @@ public class RedisUtils {
             return new ArrayList<>();
         }
         return (List<String>) res;
+    }
+
+    public void delete(String key){
+        template.delete(key);
+    }
+
+    public void push(String key, String value){
+        template.opsForList().rightPush(key, value);
     }
 }

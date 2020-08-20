@@ -79,6 +79,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>cn.com.bluemoon</groupId>
+            <artifactId>short-url-api</artifactId>
+            <version>0.0.1</version>
+
+        </dependency>
     </dependencies>
     <build>
         <finalName>${project.artifactId}</finalName>

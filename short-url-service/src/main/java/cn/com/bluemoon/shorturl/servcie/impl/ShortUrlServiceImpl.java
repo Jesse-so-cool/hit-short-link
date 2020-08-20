@@ -1,18 +1,22 @@
 package cn.com.bluemoon.shorturl.servcie.impl;
 
 import cn.com.bluemoon.shorturl.config.ShortUrlConfig;
-import cn.com.bluemoon.shorturl.dto.ShortUrlDto;
-import cn.com.bluemoon.shorturl.dto.ShortUrlEntity;
-import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
+import cn.com.bluemoon.shorturl.dto.*;
+import cn.com.bluemoon.shorturl.init.RecordTask;
+import cn.com.bluemoon.shorturl.repository.ShortUrlQueryRecordRepository;
 import cn.com.bluemoon.shorturl.repository.ShortUrlRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
 import cn.com.bluemoon.shorturl.util.ConvertUtil;
 import cn.com.bluemoon.shorturl.redis.RedisUtils;
+import com.alibaba.fastjson.JSONObject;
 import com.bluemoon.pf.mgr.anno.BmAnno;
 import com.bluemoon.pf.mgr.anno.BmBizAction;
 import com.bluemoon.pf.mgr.anno.BmParam;
+import com.google.gson.Gson;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.Random;
@@ -33,9 +37,12 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     @Autowired
     private ShortUrlConfig shortUrlConfig;
 
+    @Autowired
+    private ShortUrlQueryRecordRepository shortUrlQueryRecordRepository;
+
     @Override
     @BmBizAction(value = "longToShort",comment = "longUrl:长链接;validDate:有效期")
-    public ShortUrlResult longToShort(@BmParam ShortUrlDto shortUrlDto) {
+    public ShortUrlResult longToShort( @BmParam ShortUrlDto shortUrlDto) {
 
         ShortUrlResult shortUrlResult = new ShortUrlResult(null,null,"请求失败",false);
         if (!checkParam(shortUrlDto,shortUrlResult)) {
@@ -91,6 +98,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         //X-REAL-IP 根据这个nginx拿到真实ip地址
         ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl,null,"请求失败",false);
 
+        String ip = "";
         //切到最后一位 随机数
         shortUrl = shortUrl.substring(0,shortUrl.length()-1);
 
@@ -102,16 +110,15 @@ public class ShortUrlServiceImpl implements ShortUrlService {
                 //todo 这块直接放到RecordTask.handle()去处理
                 final long now = System.currentTimeMillis();
                 final ShortUrlEntity shortUrlEntity = op.get();
+                saveShortQueryRecordEntity(ip, shortUrlEntity.getLongUrl());
                 if ((now-shortUrlEntity.getCreateDate().getTime()) < shortUrlEntity.getValidDate()*3600*1000*24) {
                     //Duration.between(); 每一次都进来 都会再给7天的有效期
                     redisUtils.setData(ConvertUtil.toBase62(shortUrlEntity.getId()),shortUrlEntity.getLongUrl(), (long) 7);
-
                     shortUrlResult.setLongUrl(shortUrlEntity.getLongUrl());
                     shortUrlResult.setResponseMsg("请求成功");
                 }else {
                     shortUrlEntity.setIsValid((byte) 0);
                     repository.save(shortUrlEntity);
-
                     shortUrlResult.setLongUrl(shortUrlConfig.getDomain()+"expired.html");
                 }
             }else {
@@ -119,10 +126,21 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             }
             //shortUrlResult.setLongUrl(longUrl);
         }else {
+            saveShortQueryRecordEntity(ip, longUrl);
             shortUrlResult.setLongUrl(longUrl);
         }
         shortUrlResult.setResponseMsg("请求成功");
         shortUrlResult.setSuccess(true);
         return shortUrlResult;
     }
+
+    private void saveShortQueryRecordEntity(String ip, String longUrl) {
+        ShortUrlQueryRecordDto shortUrlQueryRecordDto = new ShortUrlQueryRecordDto();
+        shortUrlQueryRecordDto.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        shortUrlQueryRecordDto.setIp(ip);
+        shortUrlQueryRecordDto.setLongUrl(longUrl);
+        redisUtils.push(RecordTask.key, JSONObject.toJSONString(shortUrlQueryRecordDto));
+    }
+
+
 }

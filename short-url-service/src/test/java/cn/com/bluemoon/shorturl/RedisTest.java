@@ -15,6 +15,8 @@ import java.util.List;
  * @date 2020/8/18 16:44
  */
 public class RedisTest {
+
+
     @Autowired
     private RedisUtils redisUtils;
 
@@ -28,7 +30,7 @@ public class RedisTest {
     }
     @Test
     public void luaTest(){
-        List<String> strings = redisUtils.batchPopList("jesse-demo", 100);
+        List<String> strings = redisUtils.batchPopList("jesse-demo", 1);
         for (String string : strings) {
             ResponseBean responseBean = JSONObject.parseObject(string, ResponseBean.class);
             System.out.println(responseBean.getData());
