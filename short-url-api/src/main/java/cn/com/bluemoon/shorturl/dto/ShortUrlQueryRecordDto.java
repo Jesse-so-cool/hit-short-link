@@ -1,6 +1,7 @@
 package cn.com.bluemoon.shorturl.dto;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -14,10 +15,15 @@ import java.sql.Timestamp;
  * @Date: 2020/8/19 20:54
  */
 @Data
+
 public class ShortUrlQueryRecordDto implements Serializable {
     private String ip;
     private Timestamp createTime;
     private String longUrl;
 
+    @Override
+    public String toString(){
+        return "{ ip: "+ip+" , createTime: "+createTime+" , longUrl: "+longUrl+" }";
+    }
 
 }

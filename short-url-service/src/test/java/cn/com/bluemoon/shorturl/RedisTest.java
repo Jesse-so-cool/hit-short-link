@@ -37,4 +37,6 @@ public class RedisTest extends AbstractApplicationTestNg {
             System.out.println(responseBean.getData());
         }
     }
+
+
 }

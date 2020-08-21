@@ -1,6 +1,7 @@
 package cn.com.bluemoon.shorturl.servcie;
 
 import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordDto;
+import com.bluemoon.pf.standard.bean.ResponseBean;
 
 import java.util.List;
 
@@ -14,4 +15,5 @@ import java.util.List;
  */
 public  interface ShortUrlQueryRecordService {
       void save(List<ShortUrlQueryRecordDto> list);
+      ResponseBean getErrorMsg(int start , int end);
 }
