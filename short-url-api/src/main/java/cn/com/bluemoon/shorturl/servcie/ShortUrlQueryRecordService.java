@@ -14,6 +14,11 @@ import java.util.List;
  * @Date: 2020/8/19 17:15
  */
 public  interface ShortUrlQueryRecordService {
-      void save(List<ShortUrlQueryRecordDto> list);
+
+      boolean save(List<ShortUrlQueryRecordDto> list);
+
       ResponseBean getErrorMsg(int start , int end);
+
+      ResponseBean checkErrorMsg(int amount , boolean flag);
+
 }

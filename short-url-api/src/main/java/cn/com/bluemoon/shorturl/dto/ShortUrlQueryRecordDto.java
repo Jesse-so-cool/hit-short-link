@@ -1,11 +1,10 @@
 package cn.com.bluemoon.shorturl.dto;
 
 import lombok.Data;
-import lombok.ToString;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-
+import com.alibaba.fastjson.JSONObject;
 /**
  * @version v1.0
  * @ProjectName: short-url
@@ -23,7 +22,7 @@ public class ShortUrlQueryRecordDto implements Serializable {
 
     @Override
     public String toString(){
-        return "{ ip: "+ip+" , createTime: "+createTime+" , longUrl: "+longUrl+" }";
+        return JSONObject.toJSONString(this);
     }
 
 }

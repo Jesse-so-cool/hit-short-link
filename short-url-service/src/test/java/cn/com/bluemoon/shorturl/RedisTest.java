@@ -38,5 +38,9 @@ public class RedisTest extends AbstractApplicationTestNg {
         }
     }
 
+    @Test
+    public void removeTest(){
+        List<String> strings = redisUtils.batchPopList("record-error-list", 100);
 
+    }
 }

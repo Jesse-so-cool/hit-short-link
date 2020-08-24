@@ -96,11 +96,12 @@ public class RedisUtils {
 
     public void push(String key, String value){
         template.opsForList().rightPush(key, value);
+
     }
 
     public List<String> range(String key, int start , int end){
 
-        return template.opsForList().range(key, 0, -1);
+        return template.opsForList().range(key, start, end);
 
     }
 }

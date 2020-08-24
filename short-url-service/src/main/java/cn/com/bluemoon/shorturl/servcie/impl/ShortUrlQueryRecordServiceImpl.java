@@ -7,7 +7,6 @@ import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
 import com.alibaba.dubbo.config.annotation.Service;
 
 
-
 import com.alibaba.fastjson.JSONObject;
 import com.bluemoon.pf.standard.bean.ResponseBean;
 import com.bluemoon.pf.standard.utils.ResponseBeanUtil;
@@ -25,6 +24,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,38 +52,65 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     public final static String key = "record-error-list";
 
     @Override
-    public void save(List<ShortUrlQueryRecordDto> list) {
+    public boolean save(List<ShortUrlQueryRecordDto> list) {
         String sql = "INSERT INTO pf_short_url_query_record( ip,create_time, long_url) VALUES (?, ?, ?)";
 
         try {
             jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    String ip= list.get(i).getIp();
+                    String ip = list.get(i).getIp();
                     Timestamp create_time = list.get(i).getCreateTime();
                     String long_url = list.get(i).getLongUrl();
                     ps.setString(1, ip);
                     ps.setTimestamp(2, create_time);
                     ps.setString(3, long_url);
                 }
+
                 @Override
                 public int getBatchSize() {
                     return list.size();
                 }
             });
-        }catch (Exception e){
-            for (int i = 0, len = list.size(); i<len; i++){
+            return true;
+        } catch (Exception e) {
+
+            for (int i = 0, len = list.size(); i < len; i++) {
                 redisUtils.push(key, list.get(i).toString());
             }
-            logger.debug("数据异常:"+e.getMessage());
+            logger.debug("数据异常:" + e.getMessage());
+            return false;
         }
 
     }
 
     @Override
-    public ResponseBean getErrorMsg(int start , int end) {
-        List<String> res = redisUtils.range(key,start,end);
-        return  ResponseBeanUtil.createScBean(res);
+    public ResponseBean getErrorMsg(int start, int end) {
+        List<String> res = redisUtils.range(key, start, end);
+        return ResponseBeanUtil.createScBean(res);
+    }
+
+    @Override
+    public ResponseBean checkErrorMsg(int amount, boolean flag) {
+
+        List<String> errorMsgList = redisUtils.batchPopList(key, amount);
+        if (errorMsgList.size() > 0) {
+            if (flag) {
+                //数据库
+                List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = new ArrayList<>();
+                for (String msg : errorMsgList) {
+                    ShortUrlQueryRecordDto shortUrlQueryRecordDto = JSONObject.parseObject(msg, ShortUrlQueryRecordDto.class);
+                    shortUrlQueryRecordDtoList.add(shortUrlQueryRecordDto);
+                }
+                if (!save(shortUrlQueryRecordDtoList)) {
+                    return ResponseBeanUtil.createFailBean(-1, "数据仍存在问题，请检查后重新提交");
+                }
+                return ResponseBeanUtil.createScBean("数据刷新完毕");
+            } else {
+                return ResponseBeanUtil.createScBean("数据提交成功");
+            }
+        }
+        return ResponseBeanUtil.createScBean("缓存数据已完全清除");
     }
 
 

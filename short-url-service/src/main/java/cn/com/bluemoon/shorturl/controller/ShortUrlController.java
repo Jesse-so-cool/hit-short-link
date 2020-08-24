@@ -47,6 +47,15 @@ public class ShortUrlController {
         return shortUrlQueryRecordService.getErrorMsg(start,end);
     }
 
+
+    @RequestMapping(value = "checkErrorMsg",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseBean checkErrorMsg(int amount, boolean flag) {
+        return shortUrlQueryRecordService.checkErrorMsg(amount, flag);
+    }
+
+
+
     @Autowired
     private RedisUtils redisUtils;
 
