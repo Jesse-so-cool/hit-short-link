@@ -24,6 +24,7 @@ public class ShortUrlQueryRecordEntity {
     private String ip;
     private Timestamp createTime;
     private String longUrl;
+    private String shortUrl;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -61,5 +62,15 @@ public class ShortUrlQueryRecordEntity {
 
     public void setLongUrl(String longUrl) {
         this.longUrl = longUrl;
+    }
+
+    @Basic
+    @Column(name = "short_url", nullable = true, length = 10)
+    public String getShortUrl() {
+        return shortUrl;
+    }
+
+    public void setShortUrl(String shortUrl) {
+        this.shortUrl = shortUrl;
     }
 }

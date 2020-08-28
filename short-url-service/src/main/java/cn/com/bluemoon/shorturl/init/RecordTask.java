@@ -5,6 +5,7 @@ import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordEntity;
 import cn.com.bluemoon.shorturl.redis.RedisUtils;
 import cn.com.bluemoon.shorturl.repository.ShortUrlQueryRecordRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
+import cn.com.bluemoon.shorturl.util.ConvertUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.bluemoon.pf.standard.bean.ResponseBean;
 import com.ctrip.framework.apollo.Config;
@@ -53,7 +54,7 @@ public class RecordTask {
 
     ScheduledExecutorService executor ;
 
-    public final static String key = "record-list";
+    public final static String key = "short-url-record-list";
     private Integer amount;
     private Integer second;
 
@@ -104,11 +105,13 @@ public class RecordTask {
     }
 
     private void handler(List<String> list) {
+
         if (list.size()>0){
             List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = new ArrayList<>();
             for (String data : list){
                 ShortUrlQueryRecordDto shortUrlQueryRecordDto= JSONObject.parseObject(data, ShortUrlQueryRecordDto.class);
                 shortUrlQueryRecordDtoList.add(shortUrlQueryRecordDto);
+                redisUtils.setData(ConvertUtil.toBase62(shortUrlQueryRecordDto.getId()),shortUrlQueryRecordDto.getLongUrl(), (long) 7);
             }
             shortUrlQueryRecordService.save(shortUrlQueryRecordDtoList);
         }

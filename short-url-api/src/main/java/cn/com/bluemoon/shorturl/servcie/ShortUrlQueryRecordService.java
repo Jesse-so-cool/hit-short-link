@@ -21,4 +21,8 @@ public  interface ShortUrlQueryRecordService {
 
       ResponseBean checkErrorMsg(int amount , boolean flag);
 
+
+      void saveShortUrlQueryRecordDto(ShortUrlQueryRecordDto shortUrlQueryRecordDto);
+
+
 }

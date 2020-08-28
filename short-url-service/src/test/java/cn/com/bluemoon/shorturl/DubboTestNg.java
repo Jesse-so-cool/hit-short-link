@@ -41,7 +41,7 @@ public class DubboTestNg   extends AbstractApplicationTestNg {
         //预期结果
         ShortUrlResult expected = new ShortUrlResult();
         expected.setLongUrl("http://baidu.com");
-        expected.setShortUrl("fxSUH");
+        expected.setShortUrl("fzWvK");
         expected.setResponseMsg("请求成功");
         expected.setSuccess(true);
         Assert.assertEquals(JSONObject.toJSONString(shortUrlResult),JSONObject.toJSONString(expected),"与预期结果不符");

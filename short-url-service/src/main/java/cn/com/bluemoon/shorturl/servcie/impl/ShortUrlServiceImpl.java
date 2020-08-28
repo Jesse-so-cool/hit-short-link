@@ -2,13 +2,13 @@ package cn.com.bluemoon.shorturl.servcie.impl;
 
 import cn.com.bluemoon.shorturl.config.ShortUrlConfig;
 import cn.com.bluemoon.shorturl.dto.*;
-import cn.com.bluemoon.shorturl.init.RecordTask;
-import cn.com.bluemoon.shorturl.repository.ShortUrlQueryRecordRepository;
+
 import cn.com.bluemoon.shorturl.repository.ShortUrlRepository;
+import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
 import cn.com.bluemoon.shorturl.util.ConvertUtil;
 import cn.com.bluemoon.shorturl.redis.RedisUtils;
-import com.alibaba.fastjson.JSONObject;
+
 import com.bluemoon.pf.mgr.anno.BmAnno;
 import com.bluemoon.pf.mgr.anno.BmBizAction;
 import com.bluemoon.pf.mgr.anno.BmParam;
@@ -16,6 +16,7 @@ import com.bluemoon.pf.mgr.anno.BmParam;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.Timestamp;
+
 import java.util.Optional;
 import java.util.Random;
 
@@ -36,7 +37,11 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     private ShortUrlConfig shortUrlConfig;
 
     @Autowired
-    private ShortUrlQueryRecordRepository shortUrlQueryRecordRepository;
+    private ShortUrlQueryRecordService shortUrlQueryRecordService;
+
+
+
+
 
     @Override
     @BmBizAction(value = "longToShort",comment = "longUrl:长链接;validDate:有效期")
@@ -101,6 +106,11 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         shortUrl = shortUrl.substring(0,shortUrl.length()-1);
 
         String longUrl = redisUtils.getData(shortUrl);
+        ShortUrlQueryRecordDto shortUrlQueryRecordDto = new ShortUrlQueryRecordDto();
+        shortUrlQueryRecordDto.setShortUrl(shortUrl);
+        shortUrlQueryRecordDto.setIp(ip);
+        shortUrlQueryRecordDto.setCreateTime(new Timestamp(System.currentTimeMillis()));
+
         if (StringUtil.isNullOrEmpty(longUrl)) {
             final long id = ConvertUtil.toBase10(shortUrl);
             final Optional<ShortUrlEntity> op = repository.findById(id);
@@ -108,12 +118,10 @@ public class ShortUrlServiceImpl implements ShortUrlService {
                 //todo 这块直接放到RecordTask.handle()去处理
                 final long now = System.currentTimeMillis();
                 final ShortUrlEntity shortUrlEntity = op.get();
-                saveShortQueryRecordEntity(ip, shortUrlEntity.getLongUrl());
                 if ((now-shortUrlEntity.getCreateDate().getTime()) < shortUrlEntity.getValidDate()*3600*1000*24) {
-                    //Duration.between(); 每一次都进来 都会再给7天的有效期
-                    redisUtils.setData(ConvertUtil.toBase62(shortUrlEntity.getId()),shortUrlEntity.getLongUrl(), (long) 7);
+                    shortUrlQueryRecordDto.setLongUrl(shortUrlEntity.getLongUrl());
+                    shortUrlQueryRecordService.saveShortUrlQueryRecordDto(shortUrlQueryRecordDto);
                     shortUrlResult.setLongUrl(shortUrlEntity.getLongUrl());
-                    shortUrlResult.setResponseMsg("请求成功");
                 }else {
                     shortUrlEntity.setIsValid((byte) 0);
                     repository.save(shortUrlEntity);
@@ -124,7 +132,8 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             }
             //shortUrlResult.setLongUrl(longUrl);
         }else {
-            saveShortQueryRecordEntity(ip, longUrl);
+            shortUrlQueryRecordDto.setLongUrl(longUrl);
+            shortUrlQueryRecordService.saveShortUrlQueryRecordDto(shortUrlQueryRecordDto);
             shortUrlResult.setLongUrl(longUrl);
         }
         shortUrlResult.setResponseMsg("请求成功");
@@ -132,13 +141,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         return shortUrlResult;
     }
 
-    private void saveShortQueryRecordEntity(String ip, String longUrl) {
-        ShortUrlQueryRecordDto shortUrlQueryRecordDto = new ShortUrlQueryRecordDto();
-        shortUrlQueryRecordDto.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        shortUrlQueryRecordDto.setIp(ip);
-        shortUrlQueryRecordDto.setLongUrl(longUrl);
-        redisUtils.push(RecordTask.key, JSONObject.toJSONString(shortUrlQueryRecordDto));
-    }
+
 
 
 }

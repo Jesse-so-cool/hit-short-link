@@ -16,9 +16,11 @@ import com.alibaba.fastjson.JSONObject;
 @Data
 
 public class ShortUrlQueryRecordDto implements Serializable {
+    private long id;
     private String ip;
     private Timestamp createTime;
     private String longUrl;
+    private String shortUrl;
 
     @Override
     public String toString(){

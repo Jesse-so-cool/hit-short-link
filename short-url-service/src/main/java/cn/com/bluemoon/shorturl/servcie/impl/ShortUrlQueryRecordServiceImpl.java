@@ -1,6 +1,7 @@
 package cn.com.bluemoon.shorturl.servcie.impl;
 
 import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordDto;
+import cn.com.bluemoon.shorturl.init.RecordTask;
 import cn.com.bluemoon.shorturl.redis.RedisUtils;
 import cn.com.bluemoon.shorturl.repository.ShortUrlQueryRecordRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
@@ -53,18 +54,20 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
 
     @Override
     public boolean save(List<ShortUrlQueryRecordDto> list) {
-        String sql = "INSERT INTO pf_short_url_query_record( ip,create_time, long_url) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO pf_short_url_query_record( ip,create_time, long_url,short_url) VALUES (?, ?, ?,?)";
 
         try {
             jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
                 @Override
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
                     String ip = list.get(i).getIp();
-                    Timestamp create_time = list.get(i).getCreateTime();
-                    String long_url = list.get(i).getLongUrl();
+                    Timestamp createTime = list.get(i).getCreateTime();
+                    String longUrl = list.get(i).getLongUrl();
+                    String shortUrl = list.get(i).getShortUrl();
                     ps.setString(1, ip);
-                    ps.setTimestamp(2, create_time);
-                    ps.setString(3, long_url);
+                    ps.setTimestamp(2, createTime);
+                    ps.setString(3, longUrl);
+                    ps.setString(4, shortUrl);
                 }
 
                 @Override
@@ -111,6 +114,11 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
             }
         }
         return ResponseBeanUtil.createScBean("缓存数据已完全清除");
+    }
+
+    @Override
+    public void saveShortUrlQueryRecordDto(ShortUrlQueryRecordDto shortUrlQueryRecordDto) {
+        redisUtils.push(RecordTask.key, JSONObject.toJSONString(shortUrlQueryRecordDto));
     }
 
 
