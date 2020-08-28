@@ -94,6 +94,7 @@ public class RecordTask {
                     executor.shutdownNow();
                 }
                 List<String> list = redisUtils.batchPopList(key, amount);
+                log.info("redis-mysql定时任务开始执行，实际pop出" + list.size() + "条");
                 //todo 插入mysql
                 handler(list);
             } catch (Throwable e) {
