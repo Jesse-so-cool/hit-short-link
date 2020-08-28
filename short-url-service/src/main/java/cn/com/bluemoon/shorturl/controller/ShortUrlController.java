@@ -31,7 +31,7 @@ public class ShortUrlController {
         return shortUrlService.longToShort(shortUrlDto);
     }
 
-    @RequestMapping("/{uri}")
+    @GetMapping("/{uri}")
     public void shortRedirect(@PathVariable String uri, HttpServletResponse response) throws Exception {
         final ShortUrlResult shortUrlResult = shortUrlService.shortToLong(uri);
         if (!shortUrlResult.isSuccess()) {

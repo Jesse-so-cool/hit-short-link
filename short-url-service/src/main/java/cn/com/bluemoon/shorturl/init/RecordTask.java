@@ -2,6 +2,7 @@ package cn.com.bluemoon.shorturl.init;
 
 import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordDto;
 import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordEntity;
+import cn.com.bluemoon.shorturl.interception.IpFilter;
 import cn.com.bluemoon.shorturl.redis.RedisUtils;
 import cn.com.bluemoon.shorturl.repository.ShortUrlQueryRecordRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
@@ -85,6 +86,7 @@ public class RecordTask {
 
     @PostConstruct
     public void init() {
+
         executor = Executors.newSingleThreadScheduledExecutor();
         Runnable command = () -> {
             try {
