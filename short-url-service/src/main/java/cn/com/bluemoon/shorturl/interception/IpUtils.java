@@ -16,8 +16,11 @@ public class IpUtils {
     }
 
     public static void setIp(HttpServletRequest request) {
-        String foward = request.getHeader("X-Forwarded-For");
-        String[] split = foward.split(",");
+        String forward = request.getHeader("X-Forwarded-For");
+        if (forward == null){
+            return;
+        }
+        String[] split = forward.split(",");
         String realIp = split[0];
         ip.set(realIp);
     }
