@@ -18,6 +18,7 @@ public class IpUtils {
     public static void setIp(HttpServletRequest request) {
         String forward = request.getHeader("X-Forwarded-For");
         if (forward == null){
+            ip.set(request.getRemoteHost());
             return;
         }
         String[] split = forward.split(",");
