@@ -9,6 +9,9 @@ import com.alibaba.dubbo.config.annotation.Service;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.bluemoon.pf.mgr.anno.BmAnno;
+import com.bluemoon.pf.mgr.anno.BmBizAction;
+import com.bluemoon.pf.mgr.anno.BmParam;
 import com.bluemoon.pf.standard.bean.ResponseBean;
 import com.bluemoon.pf.standard.utils.ResponseBeanUtil;
 
@@ -37,6 +40,7 @@ import java.util.List;
  * @Date: 2020/8/19 17:16
  */
 @Service(version = "3.0.0")
+@BmAnno()
 public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordService {
 
     Logger logger = LoggerFactory.getLogger(ShortUrlQueryRecordServiceImpl.class);
@@ -50,7 +54,7 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     @Autowired
     RedisUtils redisUtils;
 
-    public final static String key = "record-error-list";
+        public final static String key = "record-error-list";
 
     @Override
     public boolean save(List<ShortUrlQueryRecordDto> list) {
@@ -88,13 +92,22 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     }
 
     @Override
-    public ResponseBean getErrorMsg(int start, int end) {
+    @BmBizAction(value = "errorMsg", comment = "start:开始行;" +
+            "end:结束行")
+    public ResponseBean getErrorMsg(@BmParam int start,@BmParam  int end) {
         List<String> res = redisUtils.range(key, start, end);
-        return ResponseBeanUtil.createScBean(res);
+        int size = res.size();
+        if (size >0){
+            return ResponseBeanUtil.createScBean(res);
+        }
+        return ResponseBeanUtil.createScBean("暂无新数据");
+
     }
 
     @Override
-    public ResponseBean checkErrorMsg(int amount, boolean flag) {
+    @BmBizAction(value = "errorMsg", comment = "amount:执行数量;" +
+            "flag:插入数据库或者删除数据 ")
+    public ResponseBean checkErrorMsg(@BmParam int amount,@BmParam boolean flag) {
 
         List<String> errorMsgList = redisUtils.batchPopList(key, amount);
         if (errorMsgList.size() > 0) {
@@ -110,7 +123,7 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
                 }
                 return ResponseBeanUtil.createScBean("数据刷新完毕");
             } else {
-                return ResponseBeanUtil.createScBean("数据提交成功");
+                return ResponseBeanUtil.createScBean("数据删除成功");
             }
         }
         return ResponseBeanUtil.createScBean("缓存数据已完全清除");

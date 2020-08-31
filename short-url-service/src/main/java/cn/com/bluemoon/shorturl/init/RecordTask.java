@@ -114,7 +114,7 @@ public class RecordTask {
             for (String data : list){
                 ShortUrlQueryRecordDto shortUrlQueryRecordDto= JSONObject.parseObject(data, ShortUrlQueryRecordDto.class);
                 shortUrlQueryRecordDtoList.add(shortUrlQueryRecordDto);
-                redisUtils.setData(ConvertUtil.toBase62(shortUrlQueryRecordDto.getId()),shortUrlQueryRecordDto.getLongUrl(), (long) 7);
+                redisUtils.setData(shortUrlQueryRecordDto.getShortUrl(),shortUrlQueryRecordDto.getLongUrl(), (long) 7);
             }
             shortUrlQueryRecordService.save(shortUrlQueryRecordDtoList);
         }

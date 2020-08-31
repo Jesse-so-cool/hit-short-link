@@ -61,4 +61,38 @@ public class ControllerTestNg  extends AbstractApplicationTestNg {
         Assert.assertTrue(status==200,"请求失败");
     }
 
+    @Test(description = "检查异常数据'")
+    public void errorMsg() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get("/errorMsg").param("start","0").param("end","4");
+        MvcResult mvcResult = mockMvc.perform(request).andReturn();
+        int status = mvcResult.getResponse().getStatus();
+        String content = mvcResult.getResponse().getContentAsString();
+        System.out.println("返回结果："+status);
+        System.out.println(content);
+        Assert.assertTrue(status==200,"请求失败");
+
+    }
+
+    @Test(description = "将正确数据导入数据库")
+    public void updateErrorMsg() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.put("/errorMsg").param("amount","1").param("flag","true");
+        MvcResult mvcResult = mockMvc.perform(request).andReturn();
+        int status = mvcResult.getResponse().getStatus();
+        String content = mvcResult.getResponse().getContentAsString();
+        System.out.println("返回结果："+status);
+        System.out.println(content);
+        Assert.assertTrue(status==200,"请求失败");
+    }
+    @Test(description = "将异常数据从redis中删除")
+    public void updateErrorMsg1() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.put("/errorMsg").param("amount","1").param("flag","false");
+        MvcResult mvcResult = mockMvc.perform(request).andReturn();
+        int status = mvcResult.getResponse().getStatus();
+        String content = mvcResult.getResponse().getContentAsString();
+        System.out.println("返回结果："+status);
+        System.out.println(content);
+        Assert.assertTrue(status==200,"请求失败");
+    }
+
+
 }

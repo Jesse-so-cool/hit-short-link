@@ -90,14 +90,16 @@ public class RedisUtils {
         return (List<String>) res;
     }
 
-    public void delete(String key){
-        template.delete(key);
+    public boolean delete(String key){
+        return template.delete(key);
     }
 
     public void push(String key, String value){
         template.opsForList().rightPush(key, value);
 
     }
+
+
 
     public List<String> range(String key, int start , int end){
 
