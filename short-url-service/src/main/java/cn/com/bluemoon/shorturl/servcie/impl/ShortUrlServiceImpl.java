@@ -9,6 +9,7 @@ import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
 import cn.com.bluemoon.shorturl.util.ConvertUtil;
 import cn.com.bluemoon.shorturl.redis.RedisUtils;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.bluemoon.pf.mgr.anno.BmAnno;
 import com.bluemoon.pf.mgr.anno.BmBizAction;
 import com.bluemoon.pf.mgr.anno.BmParam;
@@ -23,7 +24,7 @@ import java.util.Random;
 /**
  * @date 2019/9/18
  */
-//@Service(version = "${version.short-url.service}")
+@Service(version = "${version.short-url.service}")
 @BmAnno()
 public class ShortUrlServiceImpl implements ShortUrlService {
 
