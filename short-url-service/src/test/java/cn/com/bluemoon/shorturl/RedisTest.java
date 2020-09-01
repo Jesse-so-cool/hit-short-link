@@ -7,6 +7,7 @@ import com.bluemoon.pf.standard.utils.ResponseBeanUtil;
 import com.bluemoon.pf.testng.AbstractApplicationTestNg;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -42,5 +43,12 @@ public class RedisTest extends AbstractApplicationTestNg {
     public void removeTest(){
         List<String> strings = redisUtils.batchPopList("record-error-list", 100);
 
+    }
+
+    @Test
+    public void testDelete() {
+        String key = "fzWv";
+        boolean flag = redisUtils.delete(key);
+        Assert.assertTrue(flag == true,"与预期结果不符");
     }
 }

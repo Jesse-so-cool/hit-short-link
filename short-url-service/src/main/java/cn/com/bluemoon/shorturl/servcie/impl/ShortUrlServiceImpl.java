@@ -3,6 +3,7 @@ package cn.com.bluemoon.shorturl.servcie.impl;
 import cn.com.bluemoon.shorturl.config.ShortUrlConfig;
 import cn.com.bluemoon.shorturl.dto.*;
 
+import cn.com.bluemoon.shorturl.interception.IpUtils;
 import cn.com.bluemoon.shorturl.repository.ShortUrlRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
@@ -16,6 +17,7 @@ import com.bluemoon.pf.mgr.anno.BmParam;
 
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import java.sql.Timestamp;
 
 import java.util.Optional;
@@ -41,70 +43,66 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     private ShortUrlQueryRecordService shortUrlQueryRecordService;
 
 
-
-
-
     @Override
-    @BmBizAction(value = "longToShort",comment = "longUrl:长链接;validDate:有效期")
-    public ShortUrlResult longToShort( @BmParam ShortUrlDto shortUrlDto) {
+    @BmBizAction(value = "longToShort", comment = "longUrl:长链接;validDate:有效期")
+    public ShortUrlResult longToShort(@BmParam ShortUrlDto shortUrlDto) {
 
-        ShortUrlResult shortUrlResult = new ShortUrlResult(null,null,"请求失败",false);
-        if (!checkParam(shortUrlDto,shortUrlResult)) {
+        ShortUrlResult shortUrlResult = new ShortUrlResult(null, null, "请求失败", false);
+        if (!checkParam(shortUrlDto, shortUrlResult)) {
             return shortUrlResult;
         }
         try {
             //加索引
             ShortUrlEntity urlEntity = repository.findByLongUrlAndAndIsValid(shortUrlDto.getLongUrl(), (byte) 1);
-            if (urlEntity!=null) {
+            if (urlEntity != null) {
                 urlEntity.setCreateDate(new Timestamp(System.currentTimeMillis()));
-                urlEntity.setValidDate(shortUrlDto.getValidDate()==null ? 100*365:shortUrlDto.getValidDate());
+                urlEntity.setValidDate(shortUrlDto.getValidDate() == null ? 100 * 365 : shortUrlDto.getValidDate());
                 repository.save(urlEntity);
-            }else {
+            } else {
                 urlEntity = new ShortUrlEntity();
-                urlEntity.setIsValid((byte)1);
+                urlEntity.setIsValid((byte) 1);
                 urlEntity.setLongUrl(shortUrlDto.getLongUrl());
-                urlEntity.setValidDate(shortUrlDto.getValidDate()==null ? 100*365:shortUrlDto.getValidDate());
+                urlEntity.setValidDate(shortUrlDto.getValidDate() == null ? 100 * 365 : shortUrlDto.getValidDate());
                 repository.save(urlEntity);
             }
             // 生成短链接
             String base62 = ConvertUtil.toBase62(urlEntity.getId());
             // 保存到 redis  改成一个礼拜有效期
-            redisUtils.setData(base62,shortUrlDto.getLongUrl(), (long) 7);
+            redisUtils.setData(base62, shortUrlDto.getLongUrl(), (long) 7);
             //最后以为加入随机数
             Random random = new Random();
             final int i = random.nextInt(61);
-            shortUrlResult.setShortUrl(shortUrlConfig.getDomain()+base62+ConvertUtil.BASE.charAt(i));
+            shortUrlResult.setShortUrl(shortUrlConfig.getDomain() + base62 + ConvertUtil.BASE.charAt(i));
 
             shortUrlResult.setLongUrl(shortUrlDto.getLongUrl());
             shortUrlResult.setSuccess(true);
             shortUrlResult.setResponseMsg("请求成功");
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return shortUrlResult;
     }
 
     private boolean checkParam(ShortUrlDto shortUrlDto, ShortUrlResult shortUrlResult) {
-        if (shortUrlDto==null || shortUrlDto.getLongUrl()==null || shortUrlDto.getLongUrl().length()>255) {
+        if (shortUrlDto == null || shortUrlDto.getLongUrl() == null || shortUrlDto.getLongUrl().length() > 255) {
             shortUrlResult.setResponseMsg("参数不规范");
             return false;
         }
-        if (shortUrlDto.getLongUrl().indexOf("http://")<0 && shortUrlDto.getLongUrl().indexOf("https://")<0) {
-            shortUrlDto.setLongUrl("http://"+shortUrlDto.getLongUrl());
+        if (shortUrlDto.getLongUrl().indexOf("http://") < 0 && shortUrlDto.getLongUrl().indexOf("https://") < 0) {
+            shortUrlDto.setLongUrl("http://" + shortUrlDto.getLongUrl());
         }
 
         return true;
     }
 
     @Override
-    @BmBizAction(value = "shortToLong",comment = "shortUrl:短链接")
+    @BmBizAction(value = "shortToLong", comment = "shortUrl:短链接")
     public ShortUrlResult shortToLong(@BmParam String shortUrl) {
         //X-REAL-IP 根据这个nginx拿到真实ip地址
-        ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl,null,"请求失败",false);
-
-        String ip = "";
+        ShortUrlResult shortUrlResult = new ShortUrlResult(shortUrl, null, "请求失败", false);
+        String ip = IpUtils.getIp();
         //切到最后一位 随机数
-        shortUrl = shortUrl.substring(0,shortUrl.length()-1);
+        shortUrl = shortUrl.substring(0, shortUrl.length() - 1);
 
         String longUrl = redisUtils.getData(shortUrl);
         ShortUrlQueryRecordDto shortUrlQueryRecordDto = new ShortUrlQueryRecordDto();
@@ -119,20 +117,19 @@ public class ShortUrlServiceImpl implements ShortUrlService {
                 //todo 这块直接放到RecordTask.handle()去处理
                 final long now = System.currentTimeMillis();
                 final ShortUrlEntity shortUrlEntity = op.get();
-                if ((now-shortUrlEntity.getCreateDate().getTime()) < shortUrlEntity.getValidDate()*3600*1000*24) {
+                if ((now - shortUrlEntity.getCreateDate().getTime()) < shortUrlEntity.getValidDate() * 3600 * 1000 * 24) {
                     shortUrlQueryRecordDto.setLongUrl(shortUrlEntity.getLongUrl());
                     shortUrlQueryRecordService.saveShortUrlQueryRecordDto(shortUrlQueryRecordDto);
                     shortUrlResult.setLongUrl(shortUrlEntity.getLongUrl());
-                }else {
+                } else {
                     shortUrlEntity.setIsValid((byte) 0);
                     repository.save(shortUrlEntity);
-                    shortUrlResult.setLongUrl(shortUrlConfig.getDomain()+"expired.html");
+                    shortUrlResult.setLongUrl(shortUrlConfig.getDomain() + "expired.html");
                 }
-            }else {
-                shortUrlResult.setLongUrl(shortUrlConfig.getDomain()+"notExist.html");
+            } else {
+                shortUrlResult.setLongUrl(shortUrlConfig.getDomain() + "notExist.html");
             }
-            //shortUrlResult.setLongUrl(longUrl);
-        }else {
+        } else {
             shortUrlQueryRecordDto.setLongUrl(longUrl);
             shortUrlQueryRecordService.saveShortUrlQueryRecordDto(shortUrlQueryRecordDto);
             shortUrlResult.setLongUrl(longUrl);
@@ -141,8 +138,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         shortUrlResult.setSuccess(true);
         return shortUrlResult;
     }
-
-
 
 
 }

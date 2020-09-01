@@ -1,5 +1,7 @@
 package cn.com.bluemoon.shorturl.dto;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,7 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 @Data
 
 public class ShortUrlQueryRecordDto implements Serializable {
-    private long id;
+
     private String ip;
     private Timestamp createTime;
     private String longUrl;
@@ -24,7 +26,7 @@ public class ShortUrlQueryRecordDto implements Serializable {
 
     @Override
     public String toString(){
-        return JSONObject.toJSONString(this);
+        return JSON.toJSONStringWithDateFormat(this,"yyyy-MM-dd HH:mm:ss", SerializerFeature.WriteDateUseDateFormat);
     }
 
 }

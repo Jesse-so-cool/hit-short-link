@@ -48,16 +48,21 @@ public class ShortUrlController {
     }
 
 
-    @RequestMapping(value = "checkErrorMsg",method = RequestMethod.POST)
+    /**
+     *
+     *
+     * @description: flag = true  将数据插入数据库； flag = false 删除数据 ；amount 执行数量
+     * @author: myl
+     * @time: 2020/8/31 11:34
+     */
+
+    @RequestMapping(value = "errorMsg",method = RequestMethod.PUT)
     @ResponseBody
     public ResponseBean checkErrorMsg(int amount, boolean flag) {
         return shortUrlQueryRecordService.checkErrorMsg(amount, flag);
     }
 
 
-
-    @Autowired
-    private RedisUtils redisUtils;
 
 
     @ResponseBody
