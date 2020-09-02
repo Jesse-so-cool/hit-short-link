@@ -25,6 +25,7 @@ import org.springframework.test.annotation.Rollback;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.awt.*;
@@ -49,6 +50,8 @@ public class ServiceTestNg extends AbstractApplicationTestNg {
 
     @Autowired
     private RedisUtils redisUtils;
+
+    //@BeforeTest()
 
 
     @Test
@@ -153,7 +156,6 @@ public class ServiceTestNg extends AbstractApplicationTestNg {
     public void testCheckErrorMsgRemove() {
         ResponseBean responseBean = shortUrlQueryRecordService.checkErrorMsg(1, false);
         int code = responseBean.getResponseCode();
-
         System.out.printf("code: " + code + " msg: " + responseBean.getResponseMsg());
         Assert.assertTrue(code == 0, "与预期结果不符");
     }

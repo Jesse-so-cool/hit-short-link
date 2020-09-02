@@ -54,7 +54,7 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     @Autowired
     RedisUtils redisUtils;
 
-        public final static String key = "record-error-list";
+    public final static String KEY = "record-error-list";
 
     @Override
     public boolean save(List<ShortUrlQueryRecordDto> list) {
@@ -83,7 +83,7 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
         } catch (Exception e) {
 
             for (int i = 0, len = list.size(); i < len; i++) {
-                redisUtils.push(key, list.get(i).toString());
+                redisUtils.push(KEY, list.get(i).toString());
             }
             logger.debug("数据异常:" + e.getMessage());
             return false;
@@ -94,30 +94,36 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     @Override
     @BmBizAction(value = "errorMsg", comment = "start:开始行;" +
             "end:结束行")
-    public ResponseBean getErrorMsg(@BmParam int start,@BmParam  int end) {
-        List<String> res = redisUtils.range(key, start, end);
+    public ResponseBean getErrorMsg(@BmParam int start, @BmParam int end) {
+        List<String> res = redisUtils.range(KEY, start, end);
         int size = res.size();
-        if (size >0){
-            return ResponseBeanUtil.createScBean(res);
+        if (size > 0) {
+            List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = parse(res);
+            return ResponseBeanUtil.createScBean(shortUrlQueryRecordDtoList);
         }
         return ResponseBeanUtil.createScBean("暂无新数据");
 
     }
 
+    private List<ShortUrlQueryRecordDto> parse(List<String> res) {
+        List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = new ArrayList<>();
+        for (String msg : res) {
+            ShortUrlQueryRecordDto shortUrlQueryRecordDto = JSONObject.parseObject(msg, ShortUrlQueryRecordDto.class);
+            shortUrlQueryRecordDtoList.add(shortUrlQueryRecordDto);
+        }
+        return shortUrlQueryRecordDtoList;
+    }
+
     @Override
     @BmBizAction(value = "errorMsg", comment = "amount:执行数量;" +
             "flag:插入数据库或者删除数据 ")
-    public ResponseBean checkErrorMsg(@BmParam int amount,@BmParam boolean flag) {
+    public ResponseBean checkErrorMsg(@BmParam int amount, @BmParam boolean flag) {
 
-        List<String> errorMsgList = redisUtils.batchPopList(key, amount);
+        List<String> errorMsgList = redisUtils.batchPopList(KEY, amount);
         if (errorMsgList.size() > 0) {
             if (flag) {
                 //数据库
-                List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = new ArrayList<>();
-                for (String msg : errorMsgList) {
-                    ShortUrlQueryRecordDto shortUrlQueryRecordDto = JSONObject.parseObject(msg, ShortUrlQueryRecordDto.class);
-                    shortUrlQueryRecordDtoList.add(shortUrlQueryRecordDto);
-                }
+                List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = parse(errorMsgList);
                 if (!save(shortUrlQueryRecordDtoList)) {
                     return ResponseBeanUtil.createFailBean(-1, "数据仍存在问题，请检查后重新提交");
                 }
