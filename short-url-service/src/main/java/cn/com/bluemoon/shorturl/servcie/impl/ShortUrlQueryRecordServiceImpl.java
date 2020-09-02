@@ -92,7 +92,7 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     }
 
     @Override
-    @BmBizAction(value = "errorMsg", comment = "start:开始行;" +
+    @BmBizAction(value = "getErrorMsg", comment = "start:开始行;" +
             "end:结束行")
     public ResponseBean getErrorMsg(@BmParam int start, @BmParam int end) {
         List<String> res = redisUtils.range(KEY, start, end);
@@ -115,7 +115,7 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     }
 
     @Override
-    @BmBizAction(value = "errorMsg", comment = "amount:执行数量;" +
+    @BmBizAction(value = "checkErrorMsg", comment = "amount:执行数量;" +
             "flag:插入数据库或者删除数据 ")
     public ResponseBean checkErrorMsg(@BmParam int amount, @BmParam boolean flag) {
 
