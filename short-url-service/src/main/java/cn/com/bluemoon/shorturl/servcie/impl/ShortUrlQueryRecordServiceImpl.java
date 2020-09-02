@@ -92,7 +92,7 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     }
 
     @Override
-    @BmBizAction(value = "errorMsg", comment = "start:开始行;" +
+    @BmBizAction(value = "getErrorMsg", comment = "start:开始行;" +
             "end:结束行")
     public ResponseBean getErrorMsg(@BmParam int start, @BmParam int end) {
         if (start<0 || end<0 ){
