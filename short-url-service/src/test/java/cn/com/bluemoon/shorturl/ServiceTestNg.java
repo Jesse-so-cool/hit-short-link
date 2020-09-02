@@ -44,14 +44,12 @@ public class ServiceTestNg extends AbstractApplicationTestNg {
     @Autowired
     private ShortUrlQueryRecordRepository shortUrlQueryRecordRepository;
 
-    private long startTime;
 
-    private long endTime;    //获取结束时间
 
     @Autowired
     private RedisUtils redisUtils;
 
-    //@BeforeTest()
+
 
 
     @Test
@@ -69,16 +67,9 @@ public class ServiceTestNg extends AbstractApplicationTestNg {
         System.out.println(shortUrlResult.getLongUrl());
     }
 
-    @Test(description = "redis过期，数据库中没有过期情况")
-    public void testShortToLongExpire() {
 
-        redisUtils.delete("fzXh");
-        ShortUrlResult shortUrlResult = shortUrlService.shortToLong("fzXhe");
-        System.out.println(shortUrlResult.getLongUrl());
 
-    }
-
-    @Test(description = "批量插入测试saveAll测试")//523ms
+    @Test(description = "批量插入测试saveAll测试", enabled = false)//523ms
     public void testSaveSaveAll() {
 
         List<ShortUrlQueryRecordEntity> shortUrlQueryRecordEntityList = new ArrayList<ShortUrlQueryRecordEntity>();
@@ -93,7 +84,7 @@ public class ServiceTestNg extends AbstractApplicationTestNg {
         shortUrlQueryRecordRepository.saveAll(shortUrlQueryRecordEntityList);
     }
 
-    @Test(description = "批量插入测试BatchUpdate") //90ms
+    @Test(description = "批量插入测试BatchUpdate", enabled = false) //90ms
     public void testSaveBatchUpdate() {
 
         List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = new ArrayList<ShortUrlQueryRecordDto>();
@@ -109,56 +100,7 @@ public class ServiceTestNg extends AbstractApplicationTestNg {
 
     }
 
-    @Test(description = "批量插入测试BatchUpdate参数太长")
-    public void testSaveBatchUpdateLongParam() {
-        String data = "https://baijiahao.baidu.com/";
-        String longData = "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=baidu&wd=B%E7%AB%99&oq=jpa%2520TransactionTemplate&rsv_pq=ab18331e0001ccef&rsv_t=433f9w4%2BYFFvOci918KqT3M0DqYdWZ8ozU4xvtVFCsbf00ZohhWURMkaKC0&rqlang=cn&rsv_dl=tb&rsv_enter=0&rsv_btype=t&inputT=2697&rsv_sug3=26&rsv_sug1=6&rsv_sug7=100&rsv_sug2=0&rsv_sug4=2697";
-        List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = new ArrayList<ShortUrlQueryRecordDto>();
-        for (int i = 0; i < 6; i++) {
-            ShortUrlQueryRecordDto shortUrlQueryRecordDto = new ShortUrlQueryRecordDto();
-            shortUrlQueryRecordDto.setCreateTime(new Timestamp(System.currentTimeMillis()));
-            shortUrlQueryRecordDto.setIp("119.75.217.108");
-            if (i % 2== 0) {
-                shortUrlQueryRecordDto.setLongUrl(longData);
-            } else {
-                shortUrlQueryRecordDto.setLongUrl(data);
-            }
-            shortUrlQueryRecordDto.setShortUrl("fzWv");
-            shortUrlQueryRecordDtoList.add(shortUrlQueryRecordDto);
-        }
-        shortUrlQueryRecordService.save(shortUrlQueryRecordDtoList);
-    }
 
-
-    @Test(description = "查询错误信息测试")
-    public void getErrorMsg() {
-        ResponseBean responseBean = shortUrlQueryRecordService.getErrorMsg(0, 10);
-
-    }
-
-    @Test(description = "回滚数据检查插入数据库成功测试")
-    public void testCheckErrorMsgSaveDB() {
-        ResponseBean responseBean = shortUrlQueryRecordService.checkErrorMsg(1, true);
-        int code = responseBean.getResponseCode();
-        System.out.printf("code: " + code + " msg: " + responseBean.getResponseMsg());
-        Assert.assertTrue(code == 0, "与预期结果不符");
-    }
-
-    @Test(description = "回滚数据检查插入数据库失败测试")
-    public void testCheckErrorMsg() {
-        ResponseBean responseBean = shortUrlQueryRecordService.checkErrorMsg(1, true);
-        int code = responseBean.getResponseCode();
-        System.out.printf("code: " + code + " msg: " + responseBean.getResponseMsg());
-        Assert.assertTrue(code == -1, "与预期结果不符");
-    }
-
-    @Test(description = "回滚数据删除失败测试")
-    public void testCheckErrorMsgRemove() {
-        ResponseBean responseBean = shortUrlQueryRecordService.checkErrorMsg(1, false);
-        int code = responseBean.getResponseCode();
-        System.out.printf("code: " + code + " msg: " + responseBean.getResponseMsg());
-        Assert.assertTrue(code == 0, "与预期结果不符");
-    }
 
 
 }

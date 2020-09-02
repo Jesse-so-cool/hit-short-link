@@ -95,6 +95,9 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     @BmBizAction(value = "errorMsg", comment = "start:开始行;" +
             "end:结束行")
     public ResponseBean getErrorMsg(@BmParam int start, @BmParam int end) {
+        if (start<0 || end<0 ){
+            return ResponseBeanUtil.createFailBean(-1,"请输入正确的数据范围");
+        }
         List<String> res = redisUtils.range(KEY, start, end);
         int size = res.size();
         if (size > 0) {
@@ -115,9 +118,13 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     }
 
     @Override
-    @BmBizAction(value = "errorMsg", comment = "amount:执行数量;" +
+    @BmBizAction(value = "checkErrorMsg", comment = "amount:执行数量;" +
             "flag:插入数据库或者删除数据 ")
     public ResponseBean checkErrorMsg(@BmParam int amount, @BmParam boolean flag) {
+
+        if (amount<0){
+            return ResponseBeanUtil.createFailBean(-1,"请输入正确的数据范围");
+        }
 
         List<String> errorMsgList = redisUtils.batchPopList(KEY, amount);
         if (errorMsgList.size() > 0) {

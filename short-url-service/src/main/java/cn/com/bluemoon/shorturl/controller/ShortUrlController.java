@@ -43,7 +43,7 @@ public class ShortUrlController {
 
     @RequestMapping(value = "errorMsg",method = RequestMethod.GET)
     @ResponseBody
-    public ResponseBean getErrorMsg(int start, int end) {
+    public ResponseBean getErrorMsg(@RequestParam(defaultValue = "0") int start, @RequestParam(defaultValue = "10") int end) {
         return shortUrlQueryRecordService.getErrorMsg(start,end);
     }
 
@@ -56,14 +56,11 @@ public class ShortUrlController {
      * @time: 2020/8/31 11:34
      */
 
-    @RequestMapping(value = "errorMsg",method = RequestMethod.PUT)
+    @RequestMapping(value = "checkErrorMsg",method = RequestMethod.PUT)
     @ResponseBody
-    public ResponseBean checkErrorMsg(int amount, boolean flag) {
+    public ResponseBean checkErrorMsg(@RequestParam(defaultValue = "1") int amount, boolean flag) {
         return shortUrlQueryRecordService.checkErrorMsg(amount, flag);
     }
-
-
-
 
     @ResponseBody
     @RequestMapping("/expired.html")
