@@ -84,7 +84,7 @@ public class ControllerTestNg  extends AbstractApplicationTestNg {
     }
 
 
-    @Test
+    @Test(description = "长链接转短链接正常访问")
     public void executeLongToShort() throws  Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("longUrl","http://baidu.com");
@@ -102,7 +102,7 @@ public class ControllerTestNg  extends AbstractApplicationTestNg {
         Assert.assertTrue(status==200,"请求失败");
     }
 
-    @Test
+    @Test(description = "短链接转长链接正常访问")
     public void executeShortToLong() throws  Exception {
         RequestBuilder request = MockMvcRequestBuilders.get("/fzWvJ");
         MvcResult mvcResult = mockMvc.perform(request).andReturn() ;
@@ -171,7 +171,7 @@ public class ControllerTestNg  extends AbstractApplicationTestNg {
     private int check(RequestBuilder request) throws Exception {
         MvcResult mvcResult = mockMvc.perform(request).andReturn() ;
         String content = mvcResult.getResponse().getContentAsString();
-        net.sf.json.JSONObject json = net.sf.json.JSONObject.fromObject(content);
+        JSONObject json = JSONObject.parseObject(content);
         int resStatus = (int) json.get("responseCode");
         System.out.println("返回结果："+resStatus);
         System.out.println(content);

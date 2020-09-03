@@ -15,8 +15,6 @@ import com.bluemoon.pf.mgr.anno.BmParam;
 import com.bluemoon.pf.standard.bean.ResponseBean;
 import com.bluemoon.pf.standard.utils.ResponseBeanUtil;
 
-import net.sf.json.JSONArray;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +46,6 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private ShortUrlQueryRecordRepository shortUrlQueryRecordRepository;
 
     @Autowired
     RedisUtils redisUtils;
