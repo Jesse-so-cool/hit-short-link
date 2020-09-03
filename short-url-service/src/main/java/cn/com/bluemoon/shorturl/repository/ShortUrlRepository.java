@@ -11,4 +11,6 @@ public interface ShortUrlRepository extends JpaRepository<ShortUrlEntity, Long> 
 
     ShortUrlEntity findByLongUrlAndAndIsValid(String longUrl, byte isValid);
 
+    ShortUrlEntity findByIdAndAndIsValid(Long id, byte isValid);
+
 }

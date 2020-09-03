@@ -1,20 +1,14 @@
 package cn.com.bluemoon.shorturl.init;
 
 import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordDto;
-import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordEntity;
-import cn.com.bluemoon.shorturl.interception.IpFilter;
 import cn.com.bluemoon.shorturl.redis.RedisUtils;
-import cn.com.bluemoon.shorturl.repository.ShortUrlQueryRecordRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
-import cn.com.bluemoon.shorturl.util.ConvertUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.bluemoon.pf.standard.bean.ResponseBean;
 import com.ctrip.framework.apollo.Config;
 import com.ctrip.framework.apollo.model.ConfigChange;
 import com.ctrip.framework.apollo.model.ConfigChangeEvent;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfig;
 import com.ctrip.framework.apollo.spring.annotation.ApolloConfigChangeListener;
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -53,7 +47,7 @@ public class RecordTask {
     ShortUrlQueryRecordService shortUrlQueryRecordService;
 
 
-    ScheduledExecutorService executor ;
+    ScheduledExecutorService executor;
 
     public final static String key = "short-url-record-list";
     private Integer amount;
@@ -98,7 +92,6 @@ public class RecordTask {
                 }
                 List<String> list = redisUtils.batchPopList(key, amount);
                 log.info("redis-mysql定时任务开始执行，实际pop出" + list.size() + "条");
-                //todo 插入mysql
                 handler(list);
             } catch (Throwable e) {
                 log.error(e.getLocalizedMessage());
@@ -108,13 +101,13 @@ public class RecordTask {
     }
 
     private void handler(List<String> list) {
-
-        if (list.size()>0){
+        if (list.size() > 0) {
             List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = new ArrayList<>();
-            for (String data : list){
-                ShortUrlQueryRecordDto shortUrlQueryRecordDto= JSONObject.parseObject(data, ShortUrlQueryRecordDto.class);
+            for (String data : list) {
+                ShortUrlQueryRecordDto shortUrlQueryRecordDto = JSONObject.parseObject(data, ShortUrlQueryRecordDto.class);
                 shortUrlQueryRecordDtoList.add(shortUrlQueryRecordDto);
-                redisUtils.setData(shortUrlQueryRecordDto.getShortUrl(),shortUrlQueryRecordDto.getLongUrl(), (long) 7);
+                //考虑redis7天设计的合理
+                redisUtils.setData(shortUrlQueryRecordDto.getShortUrl(), shortUrlQueryRecordDto.getLongUrl(), (long) 7);
             }
             shortUrlQueryRecordService.save(shortUrlQueryRecordDtoList);
         }
@@ -124,30 +117,38 @@ public class RecordTask {
     public void listener(ConfigChangeEvent changeEvent) {
         boolean isUpdated = false;
         for (String s : changeEvent.changedKeys()) {
-            if (s.startsWith("record-task")){
+            if (s.startsWith("record-task")) {
                 isUpdated = true;
                 break;
             }
         }
-        if (!isUpdated) {return;}
+        if (!isUpdated) {
+            return;
+        }
         ConfigChange amount = changeEvent.getChange("record-task.amount");
-        if (amount != null) {this.setAmount(Integer.parseInt(amount.getNewValue()));}
+        if (amount != null) {
+            this.setAmount(Integer.parseInt(amount.getNewValue()));
+        }
         ConfigChange second = changeEvent.getChange("record-task.second");
-        if (second != null) {this.setSecond(Integer.parseInt(second.getNewValue()));}
+        if (second != null) {
+            this.setSecond(Integer.parseInt(second.getNewValue()));
+        }
         ConfigChange enabled = changeEvent.getChange("record-task.enabled");
-        if (enabled != null){ this.setEnabled(Boolean.valueOf(enabled.getNewValue()));}
+        if (enabled != null) {
+            this.setEnabled(Boolean.valueOf(enabled.getNewValue()));
+        }
 
         try {
             if (this.enabled) {
                 executor.shutdown();
                 Thread.sleep(5000);
-                while (executor.isTerminated()){
+                while (executor.isTerminated()) {
                     init();
                 }
-            }else {
+            } else {
                 executor.shutdown();
             }
-        }catch (Throwable e){
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 

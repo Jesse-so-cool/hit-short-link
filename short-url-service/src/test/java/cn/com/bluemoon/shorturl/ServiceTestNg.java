@@ -32,6 +32,7 @@ import java.awt.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @SpringBootTest(classes = ShortUrlServiceApplication.class)
 public class ServiceTestNg extends AbstractApplicationTestNg {
@@ -49,7 +50,11 @@ public class ServiceTestNg extends AbstractApplicationTestNg {
     @Autowired
     private RedisUtils redisUtils;
 
-
+    public static void main(String[] args) {
+        String url = "file://C:/opt/settings/server.properties";
+        String regex = "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]";
+        System.out.println(Pattern.matches(regex, url));
+    }
 
 
     @Test
