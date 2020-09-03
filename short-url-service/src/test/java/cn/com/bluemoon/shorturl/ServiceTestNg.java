@@ -105,7 +105,25 @@ public class ServiceTestNg extends AbstractApplicationTestNg {
 
     }
 
-
+    @Test(description = "批量插入测试BatchUpdate参数太长 --异常" )
+    public void testSaveBatchUpdateLongParam() {
+        String data = "https://baijiahao.baidu.com/";
+        String longData = "https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=baidu&wd=B%E7%AB%99&oq=jpa%2520TransactionTemplate&rsv_pq=ab18331e0001ccef&rsv_t=433f9w4%2BYFFvOci918KqT3M0DqYdWZ8ozU4xvtVFCsbf00ZohhWURMkaKC0&rqlang=cn&rsv_dl=tb&rsv_enter=0&rsv_btype=t&inputT=2697&rsv_sug3=26&rsv_sug1=6&rsv_sug7=100&rsv_sug2=0&rsv_sug4=2697";
+        List<ShortUrlQueryRecordDto> shortUrlQueryRecordDtoList = new ArrayList<ShortUrlQueryRecordDto>();
+        for (int i = 0; i < 6; i++) {
+            ShortUrlQueryRecordDto shortUrlQueryRecordDto = new ShortUrlQueryRecordDto();
+            shortUrlQueryRecordDto.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            shortUrlQueryRecordDto.setIp("119.75.217.108");
+            if (i % 2== 0) {
+                shortUrlQueryRecordDto.setLongUrl(longData);
+            } else {
+                shortUrlQueryRecordDto.setLongUrl(data);
+            }
+            shortUrlQueryRecordDto.setShortUrl("fzWv");
+            shortUrlQueryRecordDtoList.add(shortUrlQueryRecordDto);
+        }
+        shortUrlQueryRecordService.save(shortUrlQueryRecordDtoList);
+    }
 
 
 }
