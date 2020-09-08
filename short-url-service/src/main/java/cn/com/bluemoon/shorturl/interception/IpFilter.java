@@ -30,11 +30,13 @@ public class IpFilter implements Filter {
             return;
         }
         IpUtils.setIp(request1);
+        UserAgentUtils.setUserAgent(request1);
         try {
             chain.doFilter(request, response);
         } finally {
             // 由于tomcat线程重用，记得清空
             IpUtils.clearIp();
+            UserAgentUtils.clear();
         }
     }
 

@@ -6,6 +6,7 @@ import cn.com.bluemoon.shorturl.dto.ShortUrlEntity;
 import cn.com.bluemoon.shorturl.dto.ShortUrlQueryRecordDto;
 import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
 import cn.com.bluemoon.shorturl.interception.IpUtils;
+import cn.com.bluemoon.shorturl.interception.UserAgentUtils;
 import cn.com.bluemoon.shorturl.redis.RedisUtils;
 import cn.com.bluemoon.shorturl.repository.ShortUrlRepository;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
@@ -28,7 +29,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 @Service(version = "${version.short-url.service}")
-@BmAnno()
+@BmAnno
 public class ShortUrlServiceImpl implements ShortUrlService {
 
     @Autowired
@@ -100,10 +101,6 @@ public class ShortUrlServiceImpl implements ShortUrlService {
             shortUrlResult.setResponseMsg("url不规范");
             return false;
         }
-//        if (shortUrlDto.getLongUrl().indexOf("http://") < 0 && shortUrlDto.getLongUrl().indexOf("https://") < 0) {
-//            shortUrlDto.setLongUrl("http://" + shortUrlDto.getLongUrl());
-//        }
-
         return true;
     }
 
@@ -120,6 +117,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         ShortUrlQueryRecordDto shortUrlQueryRecordDto = new ShortUrlQueryRecordDto();
         shortUrlQueryRecordDto.setShortUrl(shortUrl);
         shortUrlQueryRecordDto.setIp(ip);
+        shortUrlQueryRecordDto.setUserAgent(UserAgentUtils.getUserAgent());
         shortUrlQueryRecordDto.setCreateTime(new Timestamp(System.currentTimeMillis()));
 
         if (StringUtil.isNullOrEmpty(longUrl)) {
@@ -156,6 +154,5 @@ public class ShortUrlServiceImpl implements ShortUrlService {
         shortUrlResult.setSuccess(true);
         return shortUrlResult;
     }
-
 
 }

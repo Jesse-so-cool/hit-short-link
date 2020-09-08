@@ -25,6 +25,7 @@ public class ShortUrlQueryRecordEntity {
     private Timestamp createTime;
     private String longUrl;
     private String shortUrl;
+    private String userAgent;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -73,4 +74,14 @@ public class ShortUrlQueryRecordEntity {
     public void setShortUrl(String shortUrl) {
         this.shortUrl = shortUrl;
     }
+    @Basic
+    @Column(name = "user_agent")
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
 }

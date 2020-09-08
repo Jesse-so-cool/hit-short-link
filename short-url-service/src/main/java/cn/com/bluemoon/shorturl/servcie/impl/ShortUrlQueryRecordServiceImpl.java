@@ -33,11 +33,10 @@ import java.util.List;
  * @version v1.0
  * @ProjectName: short-url
  * @ClassName: ShortUrlQueryRecordServiceImpl
- * @Description: TODO(一句话描述该类的功能)
  * @Author: mayuli
  * @Date: 2020/8/19 17:16
  */
-@Service(version = "3.0.0")
+@org.springframework.stereotype.Service
 @BmAnno()
 public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordService {
 
@@ -54,7 +53,7 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
 
     @Override
     public boolean save(List<ShortUrlQueryRecordDto> list) {
-        String sql = "INSERT INTO pf_short_url_query_record( ip,create_time, long_url,short_url) VALUES (?, ?, ?,?)";
+        String sql = "INSERT INTO pf_short_url_query_record( ip,create_time, long_url,short_url,user_agent) VALUES (?, ?, ?,?,?)";
 
         try {
             jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
@@ -64,10 +63,12 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
                     Timestamp createTime = list.get(i).getCreateTime();
                     String longUrl = list.get(i).getLongUrl();
                     String shortUrl = list.get(i).getShortUrl();
+                    String userAgent = list.get(i).getUserAgent();
                     ps.setString(1, ip);
                     ps.setTimestamp(2, createTime);
                     ps.setString(3, longUrl);
                     ps.setString(4, shortUrl);
+                    ps.setString(5, userAgent);
                 }
 
                 @Override
@@ -81,7 +82,7 @@ public class ShortUrlQueryRecordServiceImpl implements ShortUrlQueryRecordServic
             for (int i = 0, len = list.size(); i < len; i++) {
                 redisUtils.push(KEY, list.get(i).toString());
             }
-            logger.debug("数据异常:" + e.getMessage());
+            logger.error(e.getMessage(),e);
             return false;
         }
 
