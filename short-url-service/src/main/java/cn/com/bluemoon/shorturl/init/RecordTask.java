@@ -85,16 +85,15 @@ public class RecordTask {
         executor = Executors.newSingleThreadScheduledExecutor();
         Runnable command = () -> {
             try {
-                log.info("redis-mysql定时任务开始执行，一次pop出" + amount + "条，每" + second + "秒执行一次");
                 if (executor.isShutdown()) {
                     log.info("redis-mysql定时任务被关闭");
                     executor.shutdownNow();
                 }
                 List<String> list = redisUtils.batchPopList(key, amount);
-                log.info("redis-mysql定时任务开始执行，实际pop出" + list.size() + "条");
+                log.info("redis-mysql定时任务开始执行，一次pop出" + amount + "条，每" + second + "秒执行一次 实际pop出" + list.size() + "条");
                 handler(list);
             } catch (Throwable e) {
-                log.error(e.getLocalizedMessage());
+                log.error(e.getLocalizedMessage(),e);
             }
         };
         executor.scheduleWithFixedDelay(command, second, second, TimeUnit.SECONDS);
