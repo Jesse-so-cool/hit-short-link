@@ -16,6 +16,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableDubbo
 public class ShortUrlServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ShortUrlServiceApplication.class);
+        SpringApplication.run(ShortUrlServiceApplication.class,args);
     }
 }
