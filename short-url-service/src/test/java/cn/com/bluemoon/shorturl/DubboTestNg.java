@@ -7,16 +7,12 @@ import cn.com.bluemoon.shorturl.redis.RedisUtils;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlQueryRecordService;
 import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.bluemoon.pf.standard.bean.ResponseBean;
 import com.bluemoon.pf.testng.AbstractApplicationTestNg;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.sql.Timestamp;
