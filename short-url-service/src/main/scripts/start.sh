@@ -9,7 +9,7 @@ ROOT_DIR="$(cd $(dirname $0) && pwd)"
 AGENTDIR="/data/agent/skywalking-agent.jar"
 AGENTOPT=" -javaagent:$AGENTDIR -Dskywalking.agent.service_name=$SERVICE_NAME"
 
-CLASSPATH=./*:$ROOT_DIR/lib/*:$ROOT_DIR/conf/
+CLASSPATH=$ROOT_DIR/conf/:./*:$ROOT_DIR/lib/*
 JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseParallelGC"
 MAIN_CLASS=cn.com.bluemoon.shorturl.ShortUrlServiceApplication
 # 判断是否有APM监控路径报信息

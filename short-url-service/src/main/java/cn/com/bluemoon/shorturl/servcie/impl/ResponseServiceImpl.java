@@ -16,7 +16,7 @@ import com.bluemoon.pf.standard.utils.ResponseBeanUtil;
 
 import javax.xml.ws.Response;
 
-@Service(version = "3.0.0")
+//@Service(version = "3.0.0")
 public class ResponseServiceImpl implements ResponseService{
     @Reference(version = "${version.short-url.service}")
     private ShortUrlService shortUrlService;
