@@ -1,9 +1,9 @@
 package cn.com.jesse.shortlink.controller;
 
-import cn.com.bluemoon.shorturl.dto.ShortUrlDto;
-import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
+import cn.com.jesse.shortlink.dto.ShortUrlDto;
+import cn.com.jesse.shortlink.dto.ShortUrlResult;
 import cn.com.jesse.shortlink.servcie.ShortUrlQueryRecordService;
-import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
+import cn.com.jesse.shortlink.servcie.ShortUrlService;
 import com.bluemoon.pf.standard.bean.ResponseBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

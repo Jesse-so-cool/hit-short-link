@@ -1,16 +1,16 @@
 package cn.com.jesse.shortlink.servcie.impl;
 
 import cn.com.jesse.shortlink.config.ShortUrlConfig;
-import cn.com.bluemoon.shorturl.dto.ShortUrlDto;
+import cn.com.jesse.shortlink.dto.ShortUrlDto;
 import cn.com.jesse.shortlink.dto.ShortUrlEntity;
 import cn.com.jesse.shortlink.dto.ShortUrlQueryRecordDto;
-import cn.com.bluemoon.shorturl.dto.ShortUrlResult;
+import cn.com.jesse.shortlink.dto.ShortUrlResult;
 import cn.com.jesse.shortlink.interception.IpUtils;
 import cn.com.jesse.shortlink.interception.UserAgentUtils;
 import cn.com.jesse.shortlink.redis.RedisUtils;
 import cn.com.jesse.shortlink.repository.ShortUrlRepository;
 import cn.com.jesse.shortlink.servcie.ShortUrlQueryRecordService;
-import cn.com.bluemoon.shorturl.servcie.ShortUrlService;
+import cn.com.jesse.shortlink.servcie.ShortUrlService;
 import cn.com.jesse.shortlink.util.ConvertUtil;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
