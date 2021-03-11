@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>short-url-api</module>
-        <module>short-url-service</module>
+        <module>short-link-api</module>
+        <module>short-link-service</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -14,9 +14,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>cn.com.bluemoon</groupId>
-    <artifactId>short-url</artifactId>
+    <artifactId>hit-short-link</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>short-url</name>
+    <name>hit-short-link</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
